@@ -31,6 +31,8 @@ public class ImageDisplayComponent extends JComponent {
 
     private final MouseL mouseListener = new MouseL();
     private final BufferedImage img;
+    private int ratioin = 1;
+    private int ratioout = 1;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ImageDisplayComponent(BufferedImage img) {
@@ -40,6 +42,24 @@ public class ImageDisplayComponent extends JComponent {
         setFocusable(true);
         this.img = img;
         setPreferredSize(new Dimension (img.getWidth(), img.getHeight()));
+    }
+    
+    public String zoomOut() {
+        return ratioin != 1 ? ratio(ratioin/2, 1) : ratio(1, ratioout*2);
+    }
+    
+    public String zoomIn() {
+        return ratioout != 1 ? ratio(1, ratioout/2) : ratio(ratioin*2, 1);
+    }
+    
+    public String zoomReset() {
+        return ratio(1,1);
+    }
+    
+    private String ratio(int in, int out) {
+        ratioin = in;
+        ratioout = out;
+        return in+":"+out;
     }
 
     @Override

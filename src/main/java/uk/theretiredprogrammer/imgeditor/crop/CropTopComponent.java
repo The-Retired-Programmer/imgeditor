@@ -19,9 +19,12 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -56,6 +59,8 @@ public class CropTopComponent extends TopComponent {
     private final JTextField right = new JTextField();
     private final JTextField top = new JTextField();
     private final JTextField width = new JTextField();
+    private ImageDisplayComponent imgfield;
+    private final JLabel zoomratiolabel = new JLabel();
     //
     private final JScrollPane scrollPane = new JScrollPane();
     private final JPanel imgpanel = new JPanel();
@@ -68,6 +73,10 @@ public class CropTopComponent extends TopComponent {
     }
 
     private void initCentredLabel(String text, JPanel container, int row) {
+        initCentredLabel(new JLabel(), text, container, row);
+    }
+
+    private void initCentredLabel(JLabel label, String text, JPanel container, int row) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4,4,4,4);
@@ -76,7 +85,6 @@ public class CropTopComponent extends TopComponent {
         c.gridy = row;
         c.gridwidth = 2;
         //
-        JLabel label = new JLabel();
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setText(text);
         container.add(label, c);
@@ -125,6 +133,22 @@ public class CropTopComponent extends TopComponent {
         field.setHorizontalTextPosition(SwingConstants.LEFT);
         container.add(field, c);
     }
+    
+    private void initCentredButton(String text, 
+            ActionListener actionListener, JPanel container, int row) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(4,4,4,4);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+        c.gridx = 0;
+        c.gridy = row;
+        c.gridwidth = 2;
+        JButton field = new JButton();
+        field.addActionListener(actionListener);
+        field.setText(text);
+        container.add(field, c);
+    }
 
     private void initComponents() {
         this.setLayout(new BorderLayout());
@@ -141,6 +165,12 @@ public class CropTopComponent extends TopComponent {
         initLabeledTextField(bottom, "Bottom:", this::bottomActionPerformed, controlPanel, row++);
         initDisabledLabeledTextField(width, "Width:", this::widthActionPerformed, controlPanel, row++);
         initDisabledLabeledTextField(height, "Height:", this::heightActionPerformed, controlPanel, row++);
+        row++;
+        initCentredLabel("ZOOM DISPLAY", controlPanel, row++);
+        initCentredButton("Zoom Out", this::zoomOutActionPerformed, controlPanel, row++);
+        initCentredButton("Zoom In", this::zoomInActionPerformed, controlPanel, row++);
+        initCentredButton("Zoom Reset", this::zoomResetActionPerformed, controlPanel, row++);
+        initCentredLabel(zoomratiolabel, "1:1", controlPanel, row++);
     }
 
     @Override
@@ -166,35 +196,36 @@ public class CropTopComponent extends TopComponent {
     }
 
     public void addImage(BufferedImage img) {
-        imgpanel.add(new ImageDisplayComponent(img));
+        imgfield = new ImageDisplayComponent(img);
+        imgpanel.add(imgfield);
     }
 
-    private void leftActionPerformed(java.awt.event.ActionEvent evt) {
+    private void leftActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void rightActionPerformed(java.awt.event.ActionEvent evt) {
+    private void rightActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void topActionPerformed(java.awt.event.ActionEvent evt) {
+    private void topActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void bottomActionPerformed(java.awt.event.ActionEvent evt) {
+    private void bottomActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void widthActionPerformed(java.awt.event.ActionEvent evt) {
+    private void widthActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void heightActionPerformed(java.awt.event.ActionEvent evt) {
+    private void heightActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void usewidthheightItemStateChanged(java.awt.event.ItemEvent evt) {
-        if (evt.getStateChange() == java.awt.event.ItemEvent.DESELECTED) {
+    private void usewidthheightItemStateChanged(ItemEvent evt) {
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
             // disable width/height
             disablefield(width);
             disablefield(height);
@@ -209,6 +240,18 @@ public class CropTopComponent extends TopComponent {
             enablefield(width);
             enablefield(height);
         }
+    }
+    
+    private void zoomOutActionPerformed(ActionEvent evt) {
+        zoomratiolabel.setText(imgfield.zoomOut());
+    }
+    
+    private void zoomInActionPerformed(ActionEvent evt) {
+        zoomratiolabel.setText(imgfield.zoomIn());
+    }
+    
+    private void zoomResetActionPerformed(ActionEvent evt) {
+        zoomratiolabel.setText(imgfield.zoomReset());
     }
 
     private void enablefield(JTextField field) {
