@@ -51,7 +51,7 @@ public final class Crop implements ActionListener {
             if (img == null ) {
                 System.out.println("image is not found");
             }
-            CropWindowTopComponent tc = new CropWindowTopComponent();
+            CropTopComponent tc = new CropTopComponent();
             tc.addImage(img);
             tc.setDisplayName(title);
             tc.open();
