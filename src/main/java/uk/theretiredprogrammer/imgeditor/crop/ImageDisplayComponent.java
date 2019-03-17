@@ -30,7 +30,8 @@ import javax.swing.JComponent;
 public class ImageDisplayComponent extends JComponent {
 
     private final MouseL mouseListener = new MouseL();
-    private final BufferedImage img;
+    private BufferedImage img;
+    private final BufferedImage originalimg;
     private int ratioin = 1;
     private int ratioout = 1;
 
@@ -40,19 +41,29 @@ public class ImageDisplayComponent extends JComponent {
         addMouseMotionListener(mouseListener);
         setBackground(Color.WHITE);
         setFocusable(true);
+        this.originalimg = img;
+        setDisplayImage(img);
+    }
+        
+    private void setDisplayImage(BufferedImage img) {
         this.img = img;
         setPreferredSize(new Dimension (img.getWidth(), img.getHeight()));
+        revalidate();
+        repaint();
     }
     
     public String zoomOut() {
+        setDisplayImage(ImageProcessing.zoomOut(img));
         return ratioin != 1 ? ratio(ratioin/2, 1) : ratio(1, ratioout*2);
     }
     
     public String zoomIn() {
+        setDisplayImage(ImageProcessing.zoomIn(img));
         return ratioout != 1 ? ratio(1, ratioout/2) : ratio(ratioin*2, 1);
     }
     
     public String zoomReset() {
+        setDisplayImage(originalimg);
         return ratio(1,1);
     }
     

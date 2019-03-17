@@ -15,6 +15,9 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 
 
@@ -24,6 +27,18 @@ import java.awt.image.BufferedImage;
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class ImageProcessing {
+    
+    public static BufferedImage zoomOut(BufferedImage img){
+        return scaleImage(img, img.getWidth()/2, img.getHeight()/2, 
+                img.getTransparency() == Transparency.OPAQUE
+                ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+    }
+    
+    public static BufferedImage zoomIn(BufferedImage img){
+        return scaleImage(img, img.getWidth()*2, img.getHeight()*2, 
+                img.getTransparency() == Transparency.OPAQUE
+                ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+    }
 
 //    private static final int SMALLTHUMBNAILHEIGHT = 100;
 //    private static final int MEDIUMTHUMBNAILHEIGHT = 400;
@@ -96,14 +111,14 @@ public class ImageProcessing {
 //        return ret;
 //    }
 //
-//    private BufferedImage scaleImage(BufferedImage img, int w, int h, int type) {
-//        BufferedImage tmp = new BufferedImage(w, h, type);
-//        Graphics2D g2 = tmp.createGraphics();
-//        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-//        g2.drawImage(img, 0, 0, w, h, null);
-//        g2.dispose();
-//        return tmp;
-//    }
+    private static BufferedImage scaleImage(BufferedImage img, int w, int h, int type) {
+        BufferedImage tmp = new BufferedImage(w, h, type);
+        Graphics2D g2 = tmp.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2.drawImage(img, 0, 0, w, h, null);
+        g2.dispose();
+        return tmp;
+    }
 //
 //    public BufferedImage getMediumThumbnail() {
 //        return mediumThumbnail;
