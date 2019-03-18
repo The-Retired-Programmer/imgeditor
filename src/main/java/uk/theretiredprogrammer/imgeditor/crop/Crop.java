@@ -17,14 +17,11 @@ package uk.theretiredprogrammer.imgeditor.crop;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 import org.openide.loaders.DataObject;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.filesystems.FileUtil;
 
 @ActionID(
         category = "Images",
@@ -46,12 +43,8 @@ public final class Crop implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ev) {
         try {
-            String title = context.getPrimaryFile().getNameExt();
-            BufferedImage img = ImageIO.read(FileUtil.toFile(context.getPrimaryFile()));
             CropTopComponent tc = new CropTopComponent();
             tc.setImageFile(context.getPrimaryFile());
-            tc.centredImage(img);
-            tc.setDisplayName(title);
             tc.open();
             tc.requestActive();
         } catch (IOException ex) {

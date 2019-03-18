@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -35,6 +37,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.windows.TopComponent;
 
 /**
@@ -112,9 +115,11 @@ public class CropTopComponent extends TopComponent {
         zoomratiolabel = doubleLabel("Zoom Ratio","1:1", controlPanel, row++);
     }
     
-    public void setImageFile(FileObject fo) {
+    public void setImageFile(FileObject fo) throws IOException {
+        setDisplayName(fo.getNameExt());
         filename.setText(fo.getNameExt());
         filepath.setText(fo.getParent().getPath());
+        centredImage(ImageIO.read(FileUtil.toFile(fo)));
     }
     
     private JLabel doubleLabel(String text, String text2, JPanel container) {
