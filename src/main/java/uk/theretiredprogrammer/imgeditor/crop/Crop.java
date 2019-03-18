@@ -48,11 +48,8 @@ public final class Crop implements ActionListener {
         try {
             String title = "Image Cropping: " + context.getNodeDelegate().getDisplayName();
             BufferedImage img = ImageIO.read(FileUtil.toFile(context.getPrimaryFile()));
-            if (img == null ) {
-                System.out.println("image is not found");
-            }
             CropTopComponent tc = new CropTopComponent();
-            tc.addImage(img);
+            tc.centredImage(img);
             tc.setDisplayName(title);
             tc.open();
             tc.requestActive();

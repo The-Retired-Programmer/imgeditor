@@ -27,7 +27,7 @@ import javax.swing.JComponent;
  *
  * @author richard
  */
-public class ImageDisplayComponent extends JComponent {
+public class ImageDisplay extends JComponent {
 
     private final MouseL mouseListener = new MouseL();
     private BufferedImage img;
@@ -36,7 +36,7 @@ public class ImageDisplayComponent extends JComponent {
     private int ratioout = 1;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImageDisplayComponent(BufferedImage img) {
+    public ImageDisplay(BufferedImage img) {
         addMouseListener(mouseListener);
         addMouseMotionListener(mouseListener);
         setBackground(Color.WHITE);

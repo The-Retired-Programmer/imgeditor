@@ -53,30 +53,65 @@ import org.openide.windows.TopComponent;
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 public class CropTopComponent extends TopComponent {
 
-    private final JTextField bottom = new JTextField();
-    private final JTextField height = new JTextField();
-    private final JTextField left = new JTextField();
-    private final JTextField right = new JTextField();
-    private final JTextField top = new JTextField();
-    private final JTextField width = new JTextField();
-    private ImageDisplayComponent imgfield;
-    private final JLabel zoomratiolabel = new JLabel();
+    private final JTextField bottom;
+    private final JTextField height;
+    private final JTextField left;
+    private final JTextField right;
+    private final JTextField top;
+    private final JTextField width;
+    private ImageDisplay imgfield;
+    private final JLabel zoomratiolabel;
+    private final JLabel imagewidth;
+    private final JLabel imageheight;
     //
     private final JScrollPane scrollPane = new JScrollPane();
     private final JPanel imgpanel = new JPanel();
+    private final JScrollPane controlScrollPane = new JScrollPane();
     private final JPanel controlPanel = new JPanel();
     
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public CropTopComponent() {
-        initComponents();
         setName("Crop");
         setToolTipText("This is a Crop window");
+        //
+        this.setLayout(new BorderLayout());
+        controlPanel.setLayout(new GridBagLayout());
+        add(controlScrollPane, BorderLayout.WEST);
+        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setViewportView(imgpanel);
+        controlScrollPane.setViewportView(controlPanel);
+        int row = 0;
+        centredLabel("CROP CONTROL", controlPanel, row++);
+        labeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged, controlPanel, row++);
+        left = labeledTextField("Left:", this::leftActionPerformed, controlPanel, row++);
+        right = labeledTextField("Right:", this::rightActionPerformed, controlPanel, row++);
+        top = labeledTextField("Top:", this::topActionPerformed, controlPanel, row++);
+        bottom = labeledTextField("Bottom:", this::bottomActionPerformed, controlPanel, row++);
+        width = labeledTextField("Width:", this::widthActionPerformed, controlPanel, row++);
+        disablefield(width);
+        height = labeledTextField("Height:", this::heightActionPerformed, controlPanel, row++);
+        disablefield(height);
+        row++;
+        centredLabel("ZOOM DISPLAY", controlPanel, row++);
+        centredButton("Zoom Out", this::zoomOutActionPerformed, controlPanel, row++);
+        centredButton("Zoom In", this::zoomInActionPerformed, controlPanel, row++);
+        centredButton("Zoom Reset", this::zoomResetActionPerformed, controlPanel, row++);
+        zoomratiolabel = doubleLabel("Zoom Ratio","1:1", controlPanel, row++);
+        row++;
+        centredLabel("IMAGE SIZE", controlPanel, row++);
+        imagewidth  = doubleLabel("Width:", "<<unknown>>", controlPanel, row++);
+        imageheight = doubleLabel("Height:", "<<unknown>>", controlPanel, row++);
     }
 
-    private void initCentredLabel(String text, JPanel container, int row) {
-        initCentredLabel(new JLabel(), text, container, row);
+    public ImageDisplay centredImage(BufferedImage img) {
+        imgfield = new ImageDisplay(img);
+        imgpanel.add(imgfield);
+        imagewidth.setText(Integer.toString(img.getWidth()));
+        imageheight.setText(Integer.toString(img.getHeight()));
+        return imgfield;
     }
-
-    private void initCentredLabel(JLabel label, String text, JPanel container, int row) {
+    
+    private JLabel centredLabel(String text, JPanel container, int row) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4,4,4,4);
@@ -85,20 +120,35 @@ public class CropTopComponent extends TopComponent {
         c.gridy = row;
         c.gridwidth = 2;
         //
+        JLabel label = new JLabel();
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setText(text);
         container.add(label, c);
+        return label;
     }
     
-    private void initDisabledLabeledTextField(JTextField field, String text,
-            ActionListener actionListener, JPanel container, int row) {
-        field.setEnabled(false);
-        field.setBackground(new java.awt.Color(128, 128, 128));
-        initLabeledTextField(field, text, actionListener, container, row);
+    private JLabel doubleLabel(String text, String text2, JPanel container, int row) {
+        JLabel field = new JLabel(text2);
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(4,4,4,4);
+        c.weightx = 1.0;
+        c.gridx = 0;
+        c.gridy = row;
+        c.gridwidth = 1;
+        //
+        JLabel label = new JLabel();
+        label.setText(text);
+        label.setLabelFor(field);
+        container.add(label, c);
+        c.gridx++;
+        field.setHorizontalAlignment(JLabel.RIGHT);
+        container.add(field, c);
+        return field;
     }
-
-    private void initLabeledTextField(JTextField field, String text,
-            ActionListener actionListener, JPanel container, int row) {
+    
+    private JTextField labeledTextField(String text, ActionListener actionListener, JPanel container, int row) {
+        JTextField field = new JTextField();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4,4,4,4);
@@ -115,9 +165,20 @@ public class CropTopComponent extends TopComponent {
         field.setColumns(6);
         field.addActionListener(actionListener);
         container.add(field, c);
+        return field;
+    }
+    
+    private void enablefield(JTextField field) {
+        field.setEnabled(true);
+        field.setBackground(new java.awt.Color(255, 255, 255));
     }
 
-    private void initLabeledCheckbox(String text, 
+    private void disablefield(JTextField field) {
+        field.setEnabled(false);
+        field.setBackground(new java.awt.Color(128, 128, 128));
+    }
+
+    private JCheckBox labeledCheckbox(String text, 
             ItemListener itemListener, JPanel container, int row) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -132,9 +193,10 @@ public class CropTopComponent extends TopComponent {
         field.setText(text);
         field.setHorizontalTextPosition(SwingConstants.LEFT);
         container.add(field, c);
+        return field;
     }
     
-    private void initCentredButton(String text, 
+    private JButton centredButton(String text, 
             ActionListener actionListener, JPanel container, int row) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -148,31 +210,9 @@ public class CropTopComponent extends TopComponent {
         field.addActionListener(actionListener);
         field.setText(text);
         container.add(field, c);
+        return field;
     }
-
-    private void initComponents() {
-        this.setLayout(new BorderLayout());
-        controlPanel.setLayout(new GridBagLayout());
-        add(controlPanel, BorderLayout.WEST);
-        add(scrollPane, BorderLayout.CENTER);
-        scrollPane.setViewportView(imgpanel);
-        int row = 0;
-        initCentredLabel("CROP CONTROL", controlPanel, row++);
-        initLabeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged, controlPanel, row++);
-        initLabeledTextField(left, "Left:", this::leftActionPerformed, controlPanel, row++);
-        initLabeledTextField(right, "Right:", this::rightActionPerformed, controlPanel, row++);
-        initLabeledTextField(top, "Top:", this::topActionPerformed, controlPanel, row++);
-        initLabeledTextField(bottom, "Bottom:", this::bottomActionPerformed, controlPanel, row++);
-        initDisabledLabeledTextField(width, "Width:", this::widthActionPerformed, controlPanel, row++);
-        initDisabledLabeledTextField(height, "Height:", this::heightActionPerformed, controlPanel, row++);
-        row++;
-        initCentredLabel("ZOOM DISPLAY", controlPanel, row++);
-        initCentredButton("Zoom Out", this::zoomOutActionPerformed, controlPanel, row++);
-        initCentredButton("Zoom In", this::zoomInActionPerformed, controlPanel, row++);
-        initCentredButton("Zoom Reset", this::zoomResetActionPerformed, controlPanel, row++);
-        initCentredLabel(zoomratiolabel, "1:1", controlPanel, row++);
-    }
-
+    
     @Override
     public void componentOpened() {
         // TODO add custom code on component opening
@@ -193,11 +233,6 @@ public class CropTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
-    }
-
-    public void addImage(BufferedImage img) {
-        imgfield = new ImageDisplayComponent(img);
-        imgpanel.add(imgfield);
     }
 
     private void leftActionPerformed(ActionEvent evt) {
@@ -252,15 +287,5 @@ public class CropTopComponent extends TopComponent {
     
     private void zoomResetActionPerformed(ActionEvent evt) {
         zoomratiolabel.setText(imgfield.zoomReset());
-    }
-
-    private void enablefield(JTextField field) {
-        field.setEnabled(true);
-        field.setBackground(new java.awt.Color(255, 255, 255));
-    }
-
-    private void disablefield(JTextField field) {
-        field.setEnabled(false);
-        field.setBackground(new java.awt.Color(128, 128, 128));
     }
 }
