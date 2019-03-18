@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -31,7 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.filesystems.FileObject;
 import org.openide.windows.TopComponent;
 
 /**
@@ -63,11 +66,14 @@ public class CropTopComponent extends TopComponent {
     private final JLabel zoomratiolabel;
     private final JLabel imagewidth;
     private final JLabel imageheight;
+    private final JLabel filename;
+    private final JLabel filepath;
     //
     private final JScrollPane scrollPane = new JScrollPane();
     private final JPanel imgpanel = new JPanel();
     private final JScrollPane controlScrollPane = new JScrollPane();
     private final JPanel controlPanel = new JPanel();
+    private final JPanel infoPanel = new JPanel();
     
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public CropTopComponent() {
@@ -80,6 +86,13 @@ public class CropTopComponent extends TopComponent {
         add(scrollPane, BorderLayout.CENTER);
         scrollPane.setViewportView(imgpanel);
         controlScrollPane.setViewportView(controlPanel);
+        infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.X_AXIS));
+        add(infoPanel,BorderLayout.NORTH);
+        //doubleLabel
+        filename = doubleLabel("File:", "xyz", infoPanel);
+        filepath = doubleLabel("File location:", "/abc/def/ghi/", infoPanel);
+        imagewidth = doubleLabel("Image width:", "1234", infoPanel);
+        imageheight = doubleLabel("Image height:", "7890", infoPanel);
         int row = 0;
         centredLabel("CROP CONTROL", controlPanel, row++);
         labeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged, controlPanel, row++);
@@ -97,10 +110,24 @@ public class CropTopComponent extends TopComponent {
         centredButton("Zoom In", this::zoomInActionPerformed, controlPanel, row++);
         centredButton("Zoom Reset", this::zoomResetActionPerformed, controlPanel, row++);
         zoomratiolabel = doubleLabel("Zoom Ratio","1:1", controlPanel, row++);
-        row++;
-        centredLabel("IMAGE SIZE", controlPanel, row++);
-        imagewidth  = doubleLabel("Width:", "<<unknown>>", controlPanel, row++);
-        imageheight = doubleLabel("Height:", "<<unknown>>", controlPanel, row++);
+    }
+    
+    public void setImageFile(FileObject fo) {
+        filename.setText(fo.getNameExt());
+        filepath.setText(fo.getParent().getPath());
+    }
+    
+    private JLabel doubleLabel(String text, String text2, JPanel container) {
+        JLabel field = new JLabel(text2);
+        //
+        JLabel label = new JLabel(text);
+        label.setBorder(new EmptyBorder(2,6,2,2));
+        label.setLabelFor(field);
+        container.add(label);
+        field.setBorder(new EmptyBorder(2,2,2,6));
+        field.setHorizontalAlignment(JLabel.RIGHT);
+        container.add(field);
+        return field;
     }
 
     public ImageDisplay centredImage(BufferedImage img) {

@@ -46,9 +46,10 @@ public final class Crop implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ev) {
         try {
-            String title = "Image Cropping: " + context.getNodeDelegate().getDisplayName();
+            String title = context.getPrimaryFile().getNameExt();
             BufferedImage img = ImageIO.read(FileUtil.toFile(context.getPrimaryFile()));
             CropTopComponent tc = new CropTopComponent();
+            tc.setImageFile(context.getPrimaryFile());
             tc.centredImage(img);
             tc.setDisplayName(title);
             tc.open();
