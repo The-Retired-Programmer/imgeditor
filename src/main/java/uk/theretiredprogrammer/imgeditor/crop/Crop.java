@@ -44,7 +44,7 @@ public final class Crop implements ActionListener {
     public void actionPerformed(ActionEvent ev) {
         try {
             CropTopComponent tc = new CropTopComponent();
-            tc.setImageFile(context.getPrimaryFile());
+            tc.configure(context.getPrimaryFile());
             tc.open();
             tc.requestActive();
         } catch (IOException ex) {

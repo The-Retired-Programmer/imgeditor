@@ -16,28 +16,10 @@
 package uk.theretiredprogrammer.imgeditor.crop;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.windows.TopComponent;
 
 /**
@@ -58,193 +40,50 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 public class CropTopComponent extends TopComponent {
-
-    private final JTextField bottom;
-    private final JTextField height;
-    private final JTextField left;
-    private final JTextField right;
-    private final JTextField top;
-    private final JTextField width;
-    private ImageDisplay imgfield;
-    private final JLabel zoomratiolabel;
-    private final JLabel imagewidth;
-    private final JLabel imageheight;
-    private final JLabel filename;
-    private final JLabel filepath;
-    //
-    private final JScrollPane scrollPane = new JScrollPane();
-    private final JPanel imgpanel = new JPanel();
-    private final JScrollPane controlScrollPane = new JScrollPane();
-    private final JPanel controlPanel = new JPanel();
-    private final JPanel infoPanel = new JPanel();
     
+    private final InfoPanel infoPanel = new InfoPanel(this);
+    private final ControlPanel controlPanel = new ControlPanel(this);
+    private final ImagePanel imagePanel = new ImagePanel(this);
+    
+    public InfoPanel getInfoPanel() {
+        return infoPanel;
+    }
+    
+    public ControlPanel getControlPanel() {
+        return controlPanel;
+    }
+    
+    public ImagePanel getImagePanel() {
+        return imagePanel;
+    }
+        
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public CropTopComponent() {
         setName("Crop");
         setToolTipText("This is a Crop window");
+    }
+
+    public void configure(FileObject fo) throws IOException {
+        String filename = fo.getNameExt();
+        setDisplayName(filename);
         //
-        this.setLayout(new BorderLayout());
-        controlPanel.setLayout(new GridBagLayout());
+        infoPanel.setFilename(filename);
+        infoPanel.setFilepath(fo.getParent().getPath());
+        imagePanel.addImage(fo);
+        // create the tc layout and insert all required panels
+        setLayout(new BorderLayout());
+        //left hand is control
+        JScrollPane controlScrollPane = new JScrollPane();
         add(controlScrollPane, BorderLayout.WEST);
-        add(scrollPane, BorderLayout.CENTER);
-        scrollPane.setViewportView(imgpanel);
         controlScrollPane.setViewportView(controlPanel);
-        infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.X_AXIS));
-        add(infoPanel,BorderLayout.NORTH);
-        //doubleLabel
-        filename = doubleLabel("File:", "xyz", infoPanel);
-        filepath = doubleLabel("File location:", "/abc/def/ghi/", infoPanel);
-        imagewidth = doubleLabel("Image width:", "1234", infoPanel);
-        imageheight = doubleLabel("Image height:", "7890", infoPanel);
-        int row = 0;
-        centredLabel("CROP CONTROL", controlPanel, row++);
-        labeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged, controlPanel, row++);
-        left = labeledTextField("Left:", this::leftActionPerformed, controlPanel, row++);
-        right = labeledTextField("Right:", this::rightActionPerformed, controlPanel, row++);
-        top = labeledTextField("Top:", this::topActionPerformed, controlPanel, row++);
-        bottom = labeledTextField("Bottom:", this::bottomActionPerformed, controlPanel, row++);
-        width = labeledTextField("Width:", this::widthActionPerformed, controlPanel, row++);
-        disablefield(width);
-        height = labeledTextField("Height:", this::heightActionPerformed, controlPanel, row++);
-        disablefield(height);
-        row++;
-        centredLabel("ZOOM DISPLAY", controlPanel, row++);
-        centredButton("Zoom Out", this::zoomOutActionPerformed, controlPanel, row++);
-        centredButton("Zoom In", this::zoomInActionPerformed, controlPanel, row++);
-        centredButton("Zoom Reset", this::zoomResetActionPerformed, controlPanel, row++);
-        zoomratiolabel = doubleLabel("Zoom Ratio","1:1", controlPanel, row++);
-    }
-    
-    public void setImageFile(FileObject fo) throws IOException {
-        setDisplayName(fo.getNameExt());
-        filename.setText(fo.getNameExt());
-        filepath.setText(fo.getParent().getPath());
-        centredImage(ImageIO.read(FileUtil.toFile(fo)));
-    }
-    
-    private JLabel doubleLabel(String text, String text2, JPanel container) {
-        JLabel field = new JLabel(text2);
-        //
-        JLabel label = new JLabel(text);
-        label.setBorder(new EmptyBorder(2,6,2,2));
-        label.setLabelFor(field);
-        container.add(label);
-        field.setBorder(new EmptyBorder(2,2,2,6));
-        field.setHorizontalAlignment(JLabel.RIGHT);
-        container.add(field);
-        return field;
+        // centre is image
+        JScrollPane scrollPane = new JScrollPane();
+        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setViewportView(imagePanel);
+        // info is top
+        add(infoPanel, BorderLayout.NORTH);
     }
 
-    public ImageDisplay centredImage(BufferedImage img) {
-        imgfield = new ImageDisplay(img);
-        imgpanel.add(imgfield);
-        imagewidth.setText(Integer.toString(img.getWidth()));
-        imageheight.setText(Integer.toString(img.getHeight()));
-        return imgfield;
-    }
-    
-    private JLabel centredLabel(String text, JPanel container, int row) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4,4,4,4);
-        c.weightx = 1.0;
-        c.gridx = 0;
-        c.gridy = row;
-        c.gridwidth = 2;
-        //
-        JLabel label = new JLabel();
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setText(text);
-        container.add(label, c);
-        return label;
-    }
-    
-    private JLabel doubleLabel(String text, String text2, JPanel container, int row) {
-        JLabel field = new JLabel(text2);
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4,4,4,4);
-        c.weightx = 1.0;
-        c.gridx = 0;
-        c.gridy = row;
-        c.gridwidth = 1;
-        //
-        JLabel label = new JLabel();
-        label.setText(text);
-        label.setLabelFor(field);
-        container.add(label, c);
-        c.gridx++;
-        field.setHorizontalAlignment(JLabel.RIGHT);
-        container.add(field, c);
-        return field;
-    }
-    
-    private JTextField labeledTextField(String text, ActionListener actionListener, JPanel container, int row) {
-        JTextField field = new JTextField();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4,4,4,4);
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = row;
-        c.gridwidth = 1;
-        JLabel label = new JLabel();
-        label.setText(text);
-        label.setLabelFor(field);
-        container.add(label, c);
-        c.gridx++;
-        field.setHorizontalAlignment(JTextField.RIGHT);
-        field.setColumns(6);
-        field.addActionListener(actionListener);
-        container.add(field, c);
-        return field;
-    }
-    
-    private void enablefield(JTextField field) {
-        field.setEnabled(true);
-        field.setBackground(new java.awt.Color(255, 255, 255));
-    }
-
-    private void disablefield(JTextField field) {
-        field.setEnabled(false);
-        field.setBackground(new java.awt.Color(128, 128, 128));
-    }
-
-    private JCheckBox labeledCheckbox(String text, 
-            ItemListener itemListener, JPanel container, int row) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4,4,4,4);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1.0;
-        c.gridx = 0;
-        c.gridy = row;
-        c.gridwidth = 2;
-        JCheckBox field = new JCheckBox();
-        field.addItemListener(itemListener);
-        field.setText(text);
-        field.setHorizontalTextPosition(SwingConstants.LEFT);
-        container.add(field, c);
-        return field;
-    }
-    
-    private JButton centredButton(String text, 
-            ActionListener actionListener, JPanel container, int row) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4,4,4,4);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1.0;
-        c.gridx = 0;
-        c.gridy = row;
-        c.gridwidth = 2;
-        JButton field = new JButton();
-        field.addActionListener(actionListener);
-        field.setText(text);
-        container.add(field, c);
-        return field;
-    }
-    
     @Override
     public void componentOpened() {
         // TODO add custom code on component opening
@@ -265,59 +104,5 @@ public class CropTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
-    }
-
-    private void leftActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void rightActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void topActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void bottomActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void widthActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void heightActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void usewidthheightItemStateChanged(ItemEvent evt) {
-        if (evt.getStateChange() == ItemEvent.DESELECTED) {
-            // disable width/height
-            disablefield(width);
-            disablefield(height);
-            // use right/bottom
-            enablefield(right);
-            enablefield(bottom);
-        } else {
-            // disable right/bottom
-            disablefield(right);
-            disablefield(bottom);
-            // use width/height
-            enablefield(width);
-            enablefield(height);
-        }
-    }
-    
-    private void zoomOutActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(imgfield.zoomOut());
-    }
-    
-    private void zoomInActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(imgfield.zoomIn());
-    }
-    
-    private void zoomResetActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(imgfield.zoomReset());
     }
 }

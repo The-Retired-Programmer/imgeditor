@@ -30,53 +30,32 @@ import javax.swing.JComponent;
 public class ImageDisplay extends JComponent {
 
     private final MouseL mouseListener = new MouseL();
-    private BufferedImage img;
-    private final BufferedImage originalimg;
-    private int ratioin = 1;
-    private int ratioout = 1;
+    private BufferedImage image;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImageDisplay(BufferedImage img) {
+    public ImageDisplay(BufferedImage image) {
         addMouseListener(mouseListener);
         addMouseMotionListener(mouseListener);
         setBackground(Color.WHITE);
         setFocusable(true);
-        this.originalimg = img;
-        setDisplayImage(img);
+        setDisplayImage(image);
     }
         
-    private void setDisplayImage(BufferedImage img) {
-        this.img = img;
-        setPreferredSize(new Dimension (img.getWidth(), img.getHeight()));
+    public void setDisplayImage(BufferedImage image) {
+        this.image = image;
+        setPreferredSize(new Dimension (image.getWidth(), image.getHeight()));
         revalidate();
         repaint();
     }
     
-    public String zoomOut() {
-        setDisplayImage(ImageProcessing.zoomOut(img));
-        return ratioin != 1 ? ratio(ratioin/2, 1) : ratio(1, ratioout*2);
+    public BufferedImage getDisplayImage() {
+        return image;
     }
     
-    public String zoomIn() {
-        setDisplayImage(ImageProcessing.zoomIn(img));
-        return ratioout != 1 ? ratio(1, ratioout/2) : ratio(ratioin*2, 1);
-    }
-    
-    public String zoomReset() {
-        setDisplayImage(originalimg);
-        return ratio(1,1);
-    }
-    
-    private String ratio(int in, int out) {
-        ratioin = in;
-        ratioout = out;
-        return in+":"+out;
-    }
-
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawRenderedImage(img, AffineTransform.getTranslateInstance(0, 0));
+        g2d.drawRenderedImage(image, AffineTransform.getTranslateInstance(0, 0));
     }
 
 //    public BufferedImage getImage() {
