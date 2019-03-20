@@ -48,10 +48,6 @@ public class ImageDisplay extends JComponent {
         repaint();
     }
     
-    public BufferedImage getDisplayImage() {
-        return image;
-    }
-    
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;

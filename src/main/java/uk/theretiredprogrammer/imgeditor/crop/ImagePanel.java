@@ -15,7 +15,6 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -31,43 +30,37 @@ public class ImagePanel extends JPanel {
     private ImageDisplay imagefield;
     private final CropTopComponent parent;
     //
-    private BufferedImage originalimage;
-    private int ratioin = 1;
-    private int ratioout = 1;
+    private ScaledImage image;
 
     public ImagePanel(CropTopComponent parent) {
         this.parent = parent;
     }
 
     public void setImage(FileObject fo) throws IOException {
-        originalimage = ImageIO.read(FileUtil.toFile(fo));
-        imagefield = new ImageDisplay(originalimage);
+        image = new ScaledImage(ImageIO.read(FileUtil.toFile(fo)));
+        imagefield = new ImageDisplay(image.getImage());
         add(imagefield);
         InfoPanel infopanel = parent.getInfoPanel();
-        infopanel.setImagewidth(originalimage.getWidth());
-        infopanel.setImageheight(originalimage.getHeight());
-    }
-    
-    public String zoomOut() {
-        String zoomdisplay = ratioin != 1 ? ratio(ratioin / 2, 1) : ratio(1, ratioout * 2);
-        imagefield.setDisplayImage(ImageProcessing.zoomOut(imagefield.getDisplayImage()));
-        return zoomdisplay;
+        infopanel.setImagewidth(image.getWidth());
+        infopanel.setImageheight(image.getHeight());
     }
 
-    public String zoomIn() {
-        String zoomdisplay = ratioout != 1 ? ratio(1, ratioout / 2) : ratio(ratioin * 2, 1);
-        imagefield.setDisplayImage(ImageProcessing.zoomIn(imagefield.getDisplayImage()));
-        return zoomdisplay;
+    public void zoomOut() {
+        image.zoomOut();
+        imagefield.setDisplayImage(image.getImage());
     }
 
-    public String zoomReset() {
-        imagefield.setDisplayImage(originalimage);
-        return ratio(1, 1);
+    public void zoomIn() {
+        image.zoomIn();
+        imagefield.setDisplayImage(image.getImage());
     }
-    
-    private String ratio(int in, int out) {
-        ratioin = in;
-        ratioout = out;
-        return in+":"+out;
+
+    public void zoomReset() {
+        image.zoomReset();
+        imagefield.setDisplayImage(image.getImage());
+    }
+
+    public String getZoomText() {
+        return image.getZoomText();
     }
 }

@@ -35,6 +35,7 @@ public class InfoPanel extends VerticalBoxPanel {
 
     private final CropTopComponent parent;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public InfoPanel(CropTopComponent parent) {
         this.parent = parent;
         filename = filePanel.doubleLabel("File:");
@@ -52,17 +53,20 @@ public class InfoPanel extends VerticalBoxPanel {
     
     private void zoomOutActionPerformed(ActionEvent evt) {
         ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomOut());
+        imagePanel.zoomOut();
+        zoomratiolabel.setText(imagePanel.getZoomText());
     }
 
     private void zoomInActionPerformed(ActionEvent evt) {
         ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomIn());
+        imagePanel.zoomIn();
+        zoomratiolabel.setText(imagePanel.getZoomText());
     }
 
     private void zoomResetActionPerformed(ActionEvent evt) {
         ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomReset());
+        imagePanel.zoomReset();
+        zoomratiolabel.setText(imagePanel.getZoomText());
     }
 
     public void setFilename(String fn) {

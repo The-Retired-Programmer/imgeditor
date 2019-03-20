@@ -28,14 +28,14 @@ import java.awt.image.BufferedImage;
  */
 public class ImageProcessing {
     
-    public static BufferedImage zoomOut(BufferedImage img){
-        return scaleImage(img, img.getWidth()/2, img.getHeight()/2, 
+    public static BufferedImage zoomOut(BufferedImage img, int scale){
+        return scaleImage(img, img.getWidth()/scale, img.getHeight()/scale, 
                 img.getTransparency() == Transparency.OPAQUE
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
     }
     
-    public static BufferedImage zoomIn(BufferedImage img){
-        return scaleImage(img, img.getWidth()*2, img.getHeight()*2, 
+    public static BufferedImage zoomIn(BufferedImage img, int scale){
+        return scaleImage(img, img.getWidth()*scale, img.getHeight()*scale, 
                 img.getTransparency() == Transparency.OPAQUE
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
     }
