@@ -15,6 +15,7 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
+import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
@@ -28,6 +29,7 @@ public class InfoPanel extends HorizontalBoxPanel {
     private final JLabel imageheight;
     private final JLabel filename;
     private final JLabel filepath;
+    private final JLabel zoomratiolabel;
 
     private final CropTopComponent parent;
 
@@ -38,6 +40,26 @@ public class InfoPanel extends HorizontalBoxPanel {
         filepath = doubleLabel("File location:");
         imagewidth = doubleLabel("Image width:");
         imageheight = doubleLabel("Image height:");
+        button("Zoom Out", this::zoomOutActionPerformed);
+        button("Zoom In", this::zoomInActionPerformed);
+        button("Zoom Reset", this::zoomResetActionPerformed);
+        zoomratiolabel = doubleLabel("Zoom Ratio");
+        zoomratiolabel.setText("1:1");
+    }
+    
+    private void zoomOutActionPerformed(ActionEvent evt) {
+        ImagePanel imagePanel = parent.getImagePanel();
+        zoomratiolabel.setText(imagePanel.zoomOut());
+    }
+
+    private void zoomInActionPerformed(ActionEvent evt) {
+        ImagePanel imagePanel = parent.getImagePanel();
+        zoomratiolabel.setText(imagePanel.zoomIn());
+    }
+
+    private void zoomResetActionPerformed(ActionEvent evt) {
+        ImagePanel imagePanel = parent.getImagePanel();
+        zoomratiolabel.setText(imagePanel.zoomReset());
     }
 
     public void setFilename(String fn) {

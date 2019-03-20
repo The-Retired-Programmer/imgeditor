@@ -15,7 +15,9 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
+import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -40,6 +42,15 @@ public class HorizontalBoxPanel extends JPanel {
         add(label);
         field.setBorder(new EmptyBorder(2,2,2,10));
         field.setHorizontalAlignment(JLabel.RIGHT);
+        add(field);
+        return field;
+    }
+    
+    public final JButton button(String text, ActionListener actionListener) {
+        JButton field = new JButton();
+        field.addActionListener(actionListener);
+        field.setText(text);
+        //field.setBorder(new EmptyBorder(2,10,2,10));
         add(field);
         return field;
     }

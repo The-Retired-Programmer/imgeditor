@@ -47,7 +47,7 @@ public class ImagePanel extends JPanel {
         infopanel.setImagewidth(originalimage.getWidth());
         infopanel.setImageheight(originalimage.getHeight());
     }
-
+    
     public String zoomOut() {
         imagefield.setDisplayImage(ImageProcessing.zoomOut(imagefield.getDisplayImage()));
         return ratioin != 1 ? ratio(ratioin / 2, 1) : ratio(1, ratioout * 2);

@@ -31,7 +31,6 @@ public class ControlPanel extends VerticalGridBagPanel {
     private final ControlTextField right;
     private final ControlTextField top;
     private final ControlTextField width;
-    private final JLabel zoomratiolabel;
     //
     private final CropTopComponent parent;
 
@@ -47,12 +46,6 @@ public class ControlPanel extends VerticalGridBagPanel {
         width.setEnabled(false);
         height = labeledTextField("Height:", this::heightActionPerformed);
         height.setEnabled(false);
-        skipRow();
-        centredLabel("ZOOM DISPLAY");
-        centredButton("Zoom Out", this::zoomOutActionPerformed);
-        centredButton("Zoom In", this::zoomInActionPerformed);
-        centredButton("Zoom Reset", this::zoomResetActionPerformed);
-        zoomratiolabel = doubleLabel("Zoom Ratio", "1:1");
     }
     
     private void leftActionPerformed(ActionEvent evt) {
@@ -95,20 +88,5 @@ public class ControlPanel extends VerticalGridBagPanel {
             right.setEnabled(false);
             bottom.setEnabled(false);
         }
-    }
-
-    private void zoomOutActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomOut());
-    }
-
-    private void zoomInActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomIn());
-    }
-
-    private void zoomResetActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        zoomratiolabel.setText(imagePanel.zoomReset());
     }
 }
