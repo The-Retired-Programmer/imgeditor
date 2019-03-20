@@ -16,14 +16,16 @@
 package uk.theretiredprogrammer.imgeditor.crop;
 
 import java.awt.event.ActionEvent;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 /**
  *
  * @author richard
  */
-public class InfoPanel extends HorizontalBoxPanel {
+public class InfoPanel extends VerticalBoxPanel {
+    
+    private final HorizontalBoxPanel filePanel = new HorizontalBoxPanel();
+    private final HorizontalBoxPanel zoomPanel = new HorizontalBoxPanel();
 
     private final JLabel imagewidth;
     private final JLabel imageheight;
@@ -35,16 +37,17 @@ public class InfoPanel extends HorizontalBoxPanel {
 
     public InfoPanel(CropTopComponent parent) {
         this.parent = parent;
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        filename = doubleLabel("File:");
-        filepath = doubleLabel("File location:");
-        imagewidth = doubleLabel("Image width:");
-        imageheight = doubleLabel("Image height:");
-        button("Zoom Out", this::zoomOutActionPerformed);
-        button("Zoom In", this::zoomInActionPerformed);
-        button("Zoom Reset", this::zoomResetActionPerformed);
-        zoomratiolabel = doubleLabel("Zoom Ratio");
+        filename = filePanel.doubleLabel("File:");
+        filepath = filePanel. doubleLabel("File location:");
+        imagewidth = zoomPanel.doubleLabel("Image width:");
+        imageheight = zoomPanel.doubleLabel("Image height:");
+        zoomPanel.button("Zoom Out", this::zoomOutActionPerformed);
+        zoomPanel.button("Zoom In", this::zoomInActionPerformed);
+        zoomPanel.button("Zoom Reset", this::zoomResetActionPerformed);
+        zoomratiolabel = zoomPanel.doubleLabel("Zoom Ratio");
         zoomratiolabel.setText("1:1");
+        add(filePanel);
+        add(zoomPanel);
     }
     
     private void zoomOutActionPerformed(ActionEvent evt) {

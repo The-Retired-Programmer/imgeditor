@@ -69,7 +69,7 @@ public class CropTopComponent extends TopComponent {
         //
         infoPanel.setFilename(filename);
         infoPanel.setFilepath(fo.getParent().getPath());
-        imagePanel.addImage(fo);
+        imagePanel.setImage(fo);
         // create the tc layout and insert all required panels
         setLayout(new BorderLayout());
         //left hand is control

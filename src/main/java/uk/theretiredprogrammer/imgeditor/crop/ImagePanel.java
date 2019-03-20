@@ -39,7 +39,7 @@ public class ImagePanel extends JPanel {
         this.parent = parent;
     }
 
-    public void addImage(FileObject fo) throws IOException {
+    public void setImage(FileObject fo) throws IOException {
         originalimage = ImageIO.read(FileUtil.toFile(fo));
         imagefield = new ImageDisplay(originalimage);
         add(imagefield);
@@ -49,13 +49,15 @@ public class ImagePanel extends JPanel {
     }
     
     public String zoomOut() {
+        String zoomdisplay = ratioin != 1 ? ratio(ratioin / 2, 1) : ratio(1, ratioout * 2);
         imagefield.setDisplayImage(ImageProcessing.zoomOut(imagefield.getDisplayImage()));
-        return ratioin != 1 ? ratio(ratioin / 2, 1) : ratio(1, ratioout * 2);
+        return zoomdisplay;
     }
 
     public String zoomIn() {
+        String zoomdisplay = ratioout != 1 ? ratio(1, ratioout / 2) : ratio(ratioin * 2, 1);
         imagefield.setDisplayImage(ImageProcessing.zoomIn(imagefield.getDisplayImage()));
-        return ratioout != 1 ? ratio(1, ratioout / 2) : ratio(ratioin * 2, 1);
+        return zoomdisplay;
     }
 
     public String zoomReset() {
