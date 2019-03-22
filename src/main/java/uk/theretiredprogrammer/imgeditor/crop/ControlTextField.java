@@ -38,6 +38,6 @@ public class ControlTextField extends JTextField {
     @Override
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
-        setBackground( enable ?new java.awt.Color(255, 255, 255):new java.awt.Color(128, 128, 128));
+        setBackground( enable ?new java.awt.Color(255, 255, 255):new java.awt.Color(192, 192, 192));
     }
 }

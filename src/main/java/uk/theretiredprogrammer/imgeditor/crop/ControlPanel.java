@@ -15,61 +15,147 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
  * @author richard
  */
 public class ControlPanel extends VerticalGridBagPanel {
-    
-    private final ControlTextField bottom;
-    private final ControlTextField height;
-    private final ControlTextField left;
-    private final ControlTextField right;
-    private final ControlTextField top;
-    private final ControlTextField width;
+
+    private final ControlIntSpinnerField bottom;
+    private final ControlIntSpinnerField height;
+    private final ControlIntSpinnerField left;
+    private final ControlIntSpinnerField right;
+    private final ControlIntSpinnerField top;
+    private final ControlIntSpinnerField width;
     //
     private final CropTopComponent parent;
 
-    public ControlPanel(CropTopComponent parent) {
+    private final int imageheight;
+    private final int imagewidth;
+
+    private int topv;
+    private int bottomv;
+    private int leftv;
+    private int rightv;
+    private int widthv;
+    private int heightv;
+    private boolean usewidthheight;
+
+    public ControlPanel(CropTopComponent parent, int imagewidth, int imageheight) {
         this.parent = parent;
+        this.imageheight = imageheight;
+        this.imagewidth = imagewidth;
+        usewidthheight = false;
+        topv = 1;
+        leftv = 1;
+        bottomv = imageheight;
+        rightv = imagewidth;
+        widthv = imagewidth;
+        heightv = imageheight;
+        //
         centredLabel("CROP CONTROL");
         labeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged);
-        left = labeledTextField("Left:", this::leftActionPerformed);
-        right = labeledTextField("Right:", this::rightActionPerformed);
-        top = labeledTextField("Top:", this::topActionPerformed);
-        bottom = labeledTextField("Bottom:", this::bottomActionPerformed);
-        width = labeledTextField("Width:", this::widthActionPerformed);
+        left = labeledIntSpinnerField("Left:", leftv, leftv, rightv, this::leftChanged);
+        right = labeledIntSpinnerField("Right:", rightv, leftv, rightv, this::rightChanged);
+        top = labeledIntSpinnerField("Top:", topv, topv, bottomv, this::topChanged);
+        bottom = labeledIntSpinnerField("Bottom:", bottomv, topv, bottomv, this::bottomChanged);
+        width = labeledIntSpinnerField("Width:", widthv, 1, widthv, this::widthChanged);
         width.setEnabled(false);
-        height = labeledTextField("Height:", this::heightActionPerformed);
+        height = labeledIntSpinnerField("Height:", heightv, 1, heightv, this::heightChanged);
         height.setEnabled(false);
     }
-    
-    private void leftActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+
+    private void leftChanged(ChangeEvent evt) {
+        int newv = left.getIntValue();
+        if (usewidthheight) {
+            if (newv + widthv -1 > imagewidth) {
+                newv = imagewidth - widthv +1;
+            }
+            rightv = newv + widthv - 1;
+            right.setIntValue(rightv);
+        } else {
+            if (newv > rightv) {
+                newv = rightv;
+            }
+            widthv = rightv - newv + 1;
+            width.setIntValue(widthv);
+        }
+        leftv = newv;
+        left.setIntValue(leftv);
     }
 
-    private void rightActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+    private void rightChanged(ChangeEvent evt) {
+        int newv = right.getIntValue();
+        if (!usewidthheight) {
+            if (newv < leftv) {
+                newv = leftv;
+            }
+            widthv = newv - leftv + 1;
+            width.setIntValue(widthv);
+        }
+        rightv = newv;
+        right.setIntValue(rightv);
     }
 
-    private void topActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+    private void topChanged(ChangeEvent evt) {
+        int newv = top.getIntValue();
+        if (usewidthheight) {
+            if (newv + heightv -1 > imageheight) {
+                newv = imageheight - heightv +1;
+            }
+            bottomv = newv + heightv - 1;
+            bottom.setIntValue(bottomv);
+        } else {
+            if (newv > bottomv) {
+                newv = bottomv;
+            }
+            heightv = bottomv - newv + 1;
+            height.setIntValue(heightv);
+        }
+        topv = newv;
+        top.setIntValue(topv);
     }
 
-    private void bottomActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+    private void bottomChanged(ChangeEvent evt) {
+        int newv = bottom.getIntValue();
+        if (!usewidthheight) {
+            if (newv < topv) {
+                newv = topv;
+            }
+            heightv = newv - topv + 1;
+            height.setIntValue(heightv);
+        }
+        bottomv = newv;
+        bottom.setIntValue(bottomv);
     }
 
-    private void widthActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+    private void widthChanged(ChangeEvent evt) {
+        int newv = width.getIntValue();
+        if (usewidthheight) {
+            if (newv + leftv -1 > imagewidth) {
+                newv = imagewidth - leftv +1;
+            }
+            rightv = newv + leftv - 1;
+            right.setIntValue(rightv);
+        }
+        widthv = newv;
+        width.setIntValue(widthv);
     }
 
-    private void heightActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
+    private void heightChanged(ChangeEvent evt) {
+        int newv = height.getIntValue();
+        if (usewidthheight) {
+            if (newv + topv -1> imageheight) {
+                newv = imageheight - topv+ 1;
+            }
+            bottomv = newv + topv - 1;
+            bottom.setIntValue(bottomv);
+        }
+        heightv = newv;
+        height.setIntValue(heightv);
     }
 
     private void usewidthheightItemStateChanged(ItemEvent evt) {
@@ -80,6 +166,7 @@ public class ControlPanel extends VerticalGridBagPanel {
             // use right/bottom
             right.setEnabled(true);
             bottom.setEnabled(true);
+            usewidthheight = false;
         } else {
             // use width/height
             width.setEnabled(true);
@@ -87,6 +174,7 @@ public class ControlPanel extends VerticalGridBagPanel {
             // disable right/bottom
             right.setEnabled(false);
             bottom.setEnabled(false);
+            usewidthheight = true;
         }
     }
 }

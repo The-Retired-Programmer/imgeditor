@@ -63,4 +63,12 @@ public class ImagePanel extends JPanel {
     public String getZoomText() {
         return image.getZoomText();
     }
+    
+    public int getImageWidth() {
+        return image.getWidth();
+    }
+    
+    public int getImageHeight() {
+        return image.getHeight();
+    }
 }

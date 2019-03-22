@@ -41,9 +41,9 @@ import org.openide.windows.TopComponent;
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 public class CropTopComponent extends TopComponent {
     
-    private final InfoPanel infoPanel = new InfoPanel(this);
-    private final ControlPanel controlPanel = new ControlPanel(this);
-    private final ImagePanel imagePanel = new ImagePanel(this);
+    private InfoPanel infoPanel;
+    private ControlPanel controlPanel;
+    private ImagePanel imagePanel;
     
     public InfoPanel getInfoPanel() {
         return infoPanel;
@@ -66,10 +66,15 @@ public class CropTopComponent extends TopComponent {
     public void configure(FileObject fo) throws IOException {
         String filename = fo.getNameExt();
         setDisplayName(filename);
-        //
+        // configure the info panel
+        infoPanel = new InfoPanel(this);
         infoPanel.setFilename(filename);
         infoPanel.setFilepath(fo.getParent().getPath());
+        // configure the image panel
+        imagePanel = new ImagePanel(this);
         imagePanel.setImage(fo);
+        // configure the control panel
+        controlPanel = new ControlPanel(this, imagePanel.getImageWidth(), imagePanel.getImageHeight());
         // create the tc layout and insert all required panels
         setLayout(new BorderLayout());
         //left hand is control

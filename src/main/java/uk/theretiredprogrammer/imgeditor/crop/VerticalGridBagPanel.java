@@ -25,6 +25,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -94,7 +95,24 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
-
+    public final ControlIntSpinnerField labeledIntSpinnerField(String text, int init, int min, int max, ChangeListener changeListener) {
+        ControlIntSpinnerField field = new ControlIntSpinnerField(init, min, max, changeListener);
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(4,4,4,4);
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = row++;
+        c.gridwidth = 1;
+        JLabel label = new JLabel();
+        label.setText(text);
+        label.setLabelFor(field);
+        add(label, c);
+        c.gridx++;
+        add(field, c);
+        return field;
+    }
+    
     public final JCheckBox labeledCheckbox(String text, 
             ItemListener itemListener) {
         GridBagConstraints c = new GridBagConstraints();
