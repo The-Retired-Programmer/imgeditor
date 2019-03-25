@@ -16,12 +16,11 @@
 package uk.theretiredprogrammer.imgeditor.crop;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.image.*;
 import javax.swing.JComponent;
+import org.openide.awt.StatusDisplayer;
 
 /**
  *
@@ -29,72 +28,37 @@ import javax.swing.JComponent;
  */
 public class ImageDisplay extends JComponent {
 
-    private final MouseL mouseListener = new MouseL();
-    private BufferedImage image;
+    private final static int BORDER = 50;
+    private final static int CROPMARK = 25;
 
-    @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImageDisplay(BufferedImage image) {
-        addMouseListener(mouseListener);
-        addMouseMotionListener(mouseListener);
+    private ImageAndCrops cropdata;
+
+    public void display(ImageAndCrops cropdata) {
         setBackground(Color.WHITE);
         setFocusable(true);
-        setDisplayImage(image);
-    }
-        
-    public void setDisplayImage(BufferedImage image) {
-        this.image = image;
-        setPreferredSize(new Dimension (image.getWidth(), image.getHeight()));
+        this.cropdata = cropdata;
+        setPreferredSize(new Dimension(cropdata.getSizedImage().getWidth() + 2 * BORDER,
+                cropdata.getSizedImage().getHeight() + 2 * BORDER));
         revalidate();
         repaint();
     }
-    
+
     @Override
     public void paint(Graphics g) {
+        BufferedImage image = cropdata.getSizedImage();
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawRenderedImage(image, AffineTransform.getTranslateInstance(0, 0));
-    }
-
-//    public BufferedImage getImage() {
-//        int width = Math.min(getWidth(), 1600);
-//        int height = Math.min(getHeight(), 1200);
-//        if (backingImage == null || backingImage.getWidth() != width || backingImage.getHeight() != height) {
-//            int newWidth = backingImage == null ? width : Math.max(width, backingImage.getWidth());
-//            int newHeight = backingImage == null ? height : Math.max(height, backingImage.getHeight());
-//            if (newHeight > height && newWidth > width && backingImage != null) {
-//                return backingImage;
-//            }
-//            BufferedImage old = backingImage;
-//            backingImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB_PRE);
-//            Graphics2D g = backingImage.createGraphics();
-//            g.setColor(Color.WHITE);
-//            g.fillRect(0, 0, width, height);
-//            if (old != null) {
-//                g.drawRenderedImage(old,
-//                        AffineTransform.getTranslateInstance(0, 0));
-//            }
-//            g.dispose();
-//            setPreferredSize(new Dimension (newWidth, newHeight));
-//        }
-//        return img;
-//    }
-
-    private final class MouseL extends MouseAdapter implements MouseMotionListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-//            Point p = e.getPoint();
-//            int half = brushDiameter / 2;
-//            Graphics2D g = getImage().createGraphics();
-//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//                               RenderingHints.VALUE_ANTIALIAS_ON);
-//            g.setPaint(getColor());
-//            g.fillOval(p.x - half, p.y - half, brushDiameter, brushDiameter);
-//            g.dispose();
-//            repaint(p.x - half, p.y - half, brushDiameter, brushDiameter);
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            mouseClicked(e);
-        }
+        g2d.drawRenderedImage(image, AffineTransform.getTranslateInstance(BORDER, BORDER));
+        g2d.setColor(Color.BLUE);
+        //
+        int leftpos = cropdata.getScaledLeft() - 2 + BORDER;
+        int rightpos = cropdata.getScaledRight() + BORDER;
+        int toppos = cropdata.getScaledTop() - 2 + BORDER;
+        int bottompos = cropdata.getScaledBottom() + BORDER;
+        StatusDisplayer.getDefault().setStatusText(leftpos+";"+rightpos+";"+toppos+";"+bottompos);
+        //
+        g2d.draw(new Line2D.Double(leftpos, BORDER - CROPMARK, leftpos, 2 * BORDER - CROPMARK + image.getHeight()));
+        g2d.draw(new Line2D.Double(rightpos, BORDER - CROPMARK, rightpos, 2 * BORDER - CROPMARK + image.getHeight()));
+        g2d.draw(new Line2D.Double(BORDER - CROPMARK, toppos, 2 * BORDER - CROPMARK + image.getWidth(), toppos));
+        g2d.draw(new Line2D.Double(BORDER - CROPMARK, bottompos, 2 * BORDER - CROPMARK + image.getWidth(), bottompos));
     }
 }

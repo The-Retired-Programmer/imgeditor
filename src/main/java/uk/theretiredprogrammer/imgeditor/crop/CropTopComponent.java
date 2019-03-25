@@ -41,21 +41,6 @@ import org.openide.windows.TopComponent;
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 public class CropTopComponent extends TopComponent {
     
-    private InfoPanel infoPanel;
-    private ControlPanel controlPanel;
-    private ImagePanel imagePanel;
-    
-    public InfoPanel getInfoPanel() {
-        return infoPanel;
-    }
-    
-    public ControlPanel getControlPanel() {
-        return controlPanel;
-    }
-    
-    public ImagePanel getImagePanel() {
-        return imagePanel;
-    }
         
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public CropTopComponent() {
@@ -66,15 +51,22 @@ public class CropTopComponent extends TopComponent {
     public void configure(FileObject fo) throws IOException {
         String filename = fo.getNameExt();
         setDisplayName(filename);
+        // setup the control panel
+        ControlPanel controlPanel = new ControlPanel();
+        // config the message panel
+        MessagePanel messagePanel = new MessagePanel();
+        
         // configure the info panel
-        infoPanel = new InfoPanel(this);
+        InfoPanel infoPanel = new InfoPanel(controlPanel);
         infoPanel.setFilename(filename);
         infoPanel.setFilepath(fo.getParent().getPath());
         // configure the image panel
-        imagePanel = new ImagePanel(this);
-        imagePanel.setImage(fo);
+        ImagePanel imagePanel = new ImagePanel();
         // configure the control panel
-        controlPanel = new ControlPanel(this, imagePanel.getImageWidth(), imagePanel.getImageHeight());
+        controlPanel.setup(imagePanel, messagePanel, fo);
+        //
+        infoPanel.setImageheight(controlPanel.getImageHeight());
+        infoPanel.setImagewidth(controlPanel.getImageWidth());
         // create the tc layout and insert all required panels
         setLayout(new BorderLayout());
         //left hand is control
@@ -87,6 +79,8 @@ public class CropTopComponent extends TopComponent {
         scrollPane.setViewportView(imagePanel);
         // info is top
         add(infoPanel, BorderLayout.NORTH);
+        // message is bottom
+        add(messagePanel, BorderLayout.SOUTH);
     }
 
     @Override

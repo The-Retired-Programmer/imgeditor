@@ -24,53 +24,35 @@ import java.awt.image.BufferedImage;
 public class ScaledImage {
 
     private final BufferedImage original;
-    private int zoomin = 1;
-    private int zoomout = 1;
+    private final Zoom zoom;
 
-    public ScaledImage(BufferedImage image) {
+    public ScaledImage(BufferedImage image, Zoom zoom) {
         original = image;
+        this.zoom = zoom;
     }
     
-    public int getWidth() {
-        return original.getWidth();
-    }
-    
-    public int getHeight() {
-        return original.getHeight();
+    public BufferedImage getFullImage() {
+        return original;
     }
 
-    public BufferedImage getImage() {
-        if (zoomin > 1) {
-            return ImageProcessing.zoomIn(original, zoomin);
-        } else if (zoomout > 1) {
-            return ImageProcessing.zoomOut(original, zoomout);
+    public BufferedImage getSizedImage() {
+        if (zoom.zoomin > 1) {
+            return ImageProcessing.zoomIn(original, zoom.zoomin);
+        } else if (zoom.zoomout > 1) {
+            return ImageProcessing.zoomOut(original, zoom.zoomout);
         } else {
             return original;
         }
     }
-
-    public String getZoomText() {
-        return zoomin + ":" + zoomout;
+    
+    public int zoomStart(int x) {
+        int ix = x -1;
+       return 1 + (zoom.zoomout > 1 ?ix/zoom.zoomout:ix*zoom.zoomin);
     }
-
-    public void zoomOut() {
-        if (zoomin != 1) {
-            zoomin /= 2;
-        } else {
-            zoomout *= 2;
-        }
-    }
-
-    public void zoomIn() {
-        if (zoomout != 1) {
-            zoomout /= 2;
-        } else {
-            zoomin *= 2;
-        }
-    }
-
-    public void zoomReset() {
-        zoomin = 1;
-        zoomout = 1;
+    
+    public int zoomEnd(int x) {
+       return zoom.zoomout > 1 ?
+               (x+zoom.zoomout-1)/zoom.zoomout:
+               x*zoom.zoomin;
     }
 }

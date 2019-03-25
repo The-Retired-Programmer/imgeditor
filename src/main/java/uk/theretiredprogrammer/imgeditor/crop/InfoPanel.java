@@ -23,7 +23,7 @@ import javax.swing.JLabel;
  * @author richard
  */
 public class InfoPanel extends VerticalBoxPanel {
-    
+
     private final HorizontalBoxPanel filePanel = new HorizontalBoxPanel();
     private final HorizontalBoxPanel zoomPanel = new HorizontalBoxPanel();
 
@@ -33,13 +33,13 @@ public class InfoPanel extends VerticalBoxPanel {
     private final JLabel filepath;
     private final JLabel zoomratiolabel;
 
-    private final CropTopComponent parent;
+    private final ControlPanel controlPanel;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public InfoPanel(CropTopComponent parent) {
-        this.parent = parent;
+    public InfoPanel(ControlPanel controlPanel) {
+        this.controlPanel = controlPanel;
         filename = filePanel.doubleLabel("File:");
-        filepath = filePanel. doubleLabel("File location:");
+        filepath = filePanel.doubleLabel("File location:");
         imagewidth = zoomPanel.doubleLabel("Image width:");
         imageheight = zoomPanel.doubleLabel("Image height:");
         zoomPanel.button("Zoom Out", this::zoomOutActionPerformed);
@@ -50,23 +50,17 @@ public class InfoPanel extends VerticalBoxPanel {
         add(filePanel);
         add(zoomPanel);
     }
-    
+
     private void zoomOutActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        imagePanel.zoomOut();
-        zoomratiolabel.setText(imagePanel.getZoomText());
+        zoomratiolabel.setText(controlPanel.zoomOut());
     }
 
     private void zoomInActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        imagePanel.zoomIn();
-        zoomratiolabel.setText(imagePanel.getZoomText());
+        zoomratiolabel.setText(controlPanel.zoomIn());
     }
 
     private void zoomResetActionPerformed(ActionEvent evt) {
-        ImagePanel imagePanel = parent.getImagePanel();
-        imagePanel.zoomReset();
-        zoomratiolabel.setText(imagePanel.getZoomText());
+        zoomratiolabel.setText(controlPanel.zoomReset());
     }
 
     public void setFilename(String fn) {

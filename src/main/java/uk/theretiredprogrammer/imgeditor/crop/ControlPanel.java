@@ -15,8 +15,13 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -24,138 +29,188 @@ import javax.swing.event.ChangeEvent;
  */
 public class ControlPanel extends VerticalGridBagPanel {
 
-    private final ControlIntSpinnerField bottom;
-    private final ControlIntSpinnerField height;
-    private final ControlIntSpinnerField left;
-    private final ControlIntSpinnerField right;
-    private final ControlIntSpinnerField top;
-    private final ControlIntSpinnerField width;
+    private ControlIntSpinnerField bottom;
+    private ControlIntSpinnerField height;
+    private ControlIntSpinnerField left;
+    private ControlIntSpinnerField right;
+    private ControlIntSpinnerField top;
+    private ControlIntSpinnerField width;
     //
-    private final CropTopComponent parent;
+    private ImagePanel imagePanel;
 
-    private final int imageheight;
-    private final int imagewidth;
-
-    private int topv;
-    private int bottomv;
-    private int leftv;
-    private int rightv;
-    private int widthv;
-    private int heightv;
     private boolean usewidthheight;
+    private ImageAndCrops cropdata;
+    private Zoom zoom;
+    private MessagePanel messagePanel;
 
-    public ControlPanel(CropTopComponent parent, int imagewidth, int imageheight) {
-        this.parent = parent;
-        this.imageheight = imageheight;
-        this.imagewidth = imagewidth;
+    public void setup(ImagePanel imagePanel, MessagePanel messagePanel,
+            FileObject fo) throws IOException {
         usewidthheight = false;
-        topv = 1;
-        leftv = 1;
-        bottomv = imageheight;
-        rightv = imagewidth;
-        widthv = imagewidth;
-        heightv = imageheight;
+        this.imagePanel = imagePanel;
+        this.messagePanel = messagePanel;
+        zoom = new Zoom();
+        cropdata = new ImageAndCrops(ImageIO.read(FileUtil.toFile(fo)), zoom);
+        cropdata.setDefaultFiletype(fo);
+        imagePanel.display(cropdata);
         //
         centredLabel("CROP CONTROL");
         labeledCheckbox("Use Width/Height", this::usewidthheightItemStateChanged);
-        left = labeledIntSpinnerField("Left:", leftv, leftv, rightv, this::leftChanged);
-        right = labeledIntSpinnerField("Right:", rightv, leftv, rightv, this::rightChanged);
-        top = labeledIntSpinnerField("Top:", topv, topv, bottomv, this::topChanged);
-        bottom = labeledIntSpinnerField("Bottom:", bottomv, topv, bottomv, this::bottomChanged);
-        width = labeledIntSpinnerField("Width:", widthv, 1, widthv, this::widthChanged);
+        left = labeledIntSpinnerField("Left:", cropdata.getLeft(), cropdata.getLeft(), cropdata.getRight(), this::leftChanged);
+        right = labeledIntSpinnerField("Right:", cropdata.getRight(), cropdata.getLeft(), cropdata.getRight(), this::rightChanged);
+        top = labeledIntSpinnerField("Top:", cropdata.getTop(), cropdata.getTop(), cropdata.getBottom(), this::topChanged);
+        bottom = labeledIntSpinnerField("Bottom:", cropdata.getBottom(), cropdata.getTop(), cropdata.getBottom(), this::bottomChanged);
+        width = labeledIntSpinnerField("Width:", cropdata.getWidth(), 1, cropdata.getWidth(), this::widthChanged);
         width.setEnabled(false);
-        height = labeledIntSpinnerField("Height:", heightv, 1, heightv, this::heightChanged);
+        height = labeledIntSpinnerField("Height:", cropdata.getHeight(), 1, cropdata.getHeight(), this::heightChanged);
         height.setEnabled(false);
+        skipRow();
+        centredButton("Reset", this::reset);
+        skipRow();
+        centredButton("Crop", this::crop);
+    }
+
+    public void displayMessage(String mess) {
+        messagePanel.displayMessage(mess);
+    }
+
+    private void reset(ActionEvent evt) {
+        cropdata.reset();
+        left.setIntValue(cropdata.getLeft());
+        right.setIntValue(cropdata.getRight());
+        top.setIntValue(cropdata.getTop());
+        bottom.setIntValue(cropdata.getBottom());
+        width.setIntValue(cropdata.getWidth());
+        height.setIntValue(cropdata.getHeight());
+    }
+
+    private void crop(ActionEvent evt) {
+        try {
+            cropdata.crop();
+        } catch (IOException ex) {
+            displayMessage("EXCEPTION FROM CROP");
+        }
+    }
+
+    public int getImageWidth() {
+        return cropdata.getImageWidth();
+    }
+
+    public int getImageHeight() {
+        return cropdata.getImageHeight();
+    }
+
+    public String zoomOut() {
+        zoom.zoomOut();
+        imagePanel.display(cropdata);
+        return zoom.getZoomText();
+    }
+
+    public String zoomIn() {
+        zoom.zoomIn();
+        imagePanel.display(cropdata);
+        return zoom.getZoomText();
+    }
+
+    public String zoomReset() {
+        zoom.zoomReset();
+        imagePanel.display(cropdata);
+        return zoom.getZoomText();
     }
 
     private void leftChanged(ChangeEvent evt) {
         int newv = left.getIntValue();
         if (usewidthheight) {
-            if (newv + widthv -1 > imagewidth) {
-                newv = imagewidth - widthv +1;
+            if (newv + cropdata.getWidth() - 1 > cropdata.getImageWidth()) {
+                newv = cropdata.getImageWidth() - cropdata.getWidth() + 1;
             }
-            rightv = newv + widthv - 1;
-            right.setIntValue(rightv);
+            cropdata.setRight(newv + cropdata.getWidth() - 1);
+            right.setIntValue(cropdata.getRight());
         } else {
-            if (newv > rightv) {
-                newv = rightv;
+            if (newv > cropdata.getRight()) {
+                newv = cropdata.getRight();
             }
-            widthv = rightv - newv + 1;
-            width.setIntValue(widthv);
+            cropdata.setWidth(cropdata.getRight() - newv + 1);
+            width.setIntValue(cropdata.getWidth());
         }
-        leftv = newv;
-        left.setIntValue(leftv);
+        cropdata.setLeft(newv);
+        left.setIntValue(cropdata.getLeft());
+        imagePanel.display(cropdata);
     }
 
     private void rightChanged(ChangeEvent evt) {
         int newv = right.getIntValue();
         if (!usewidthheight) {
-            if (newv < leftv) {
-                newv = leftv;
+            if (newv < cropdata.getLeft()) {
+                newv = cropdata.getLeft();
             }
-            widthv = newv - leftv + 1;
-            width.setIntValue(widthv);
+            cropdata.setWidth(newv - cropdata.getLeft() + 1);
+            width.setIntValue(cropdata.getWidth());
         }
-        rightv = newv;
-        right.setIntValue(rightv);
+        cropdata.setRight(newv);
+        right.setIntValue(cropdata.getRight());
+        imagePanel.display(cropdata);
     }
 
     private void topChanged(ChangeEvent evt) {
         int newv = top.getIntValue();
         if (usewidthheight) {
-            if (newv + heightv -1 > imageheight) {
-                newv = imageheight - heightv +1;
+            if (newv + cropdata.getHeight() - 1 > cropdata.getImageHeight()) {
+                newv = cropdata.getImageHeight() - cropdata.getHeight() + 1;
             }
-            bottomv = newv + heightv - 1;
-            bottom.setIntValue(bottomv);
+            cropdata.setBottom(newv + cropdata.getHeight() - 1);
+            bottom.setIntValue(cropdata.getBottom());
         } else {
-            if (newv > bottomv) {
-                newv = bottomv;
+            if (newv > cropdata.getBottom()) {
+                newv = cropdata.getBottom();
             }
-            heightv = bottomv - newv + 1;
-            height.setIntValue(heightv);
+            cropdata.setHeight(cropdata.getBottom() - newv + 1);
+            height.setIntValue(cropdata.getHeight());
         }
-        topv = newv;
-        top.setIntValue(topv);
+        cropdata.setTop(newv);
+        top.setIntValue(cropdata.getTop());
+        imagePanel.display(cropdata);
     }
 
     private void bottomChanged(ChangeEvent evt) {
         int newv = bottom.getIntValue();
         if (!usewidthheight) {
-            if (newv < topv) {
-                newv = topv;
+            if (newv < cropdata.getTop()) {
+                newv = cropdata.getTop();
             }
-            heightv = newv - topv + 1;
-            height.setIntValue(heightv);
+            cropdata.setHeight(newv - cropdata.getTop() + 1);
+            height.setIntValue(cropdata.getHeight());
         }
-        bottomv = newv;
-        bottom.setIntValue(bottomv);
+        cropdata.setBottom(newv);
+        bottom.setIntValue(cropdata.getBottom());
+        imagePanel.display(cropdata);
     }
 
     private void widthChanged(ChangeEvent evt) {
         int newv = width.getIntValue();
         if (usewidthheight) {
-            if (newv + leftv -1 > imagewidth) {
-                newv = imagewidth - leftv +1;
+            if (newv + cropdata.getLeft() - 1 > cropdata.getImageWidth()) {
+                newv = cropdata.getImageWidth() - cropdata.getLeft() + 1;
             }
-            rightv = newv + leftv - 1;
-            right.setIntValue(rightv);
+            cropdata.setRight(newv + cropdata.getLeft() - 1);
+            right.setIntValue(cropdata.getRight());
         }
-        widthv = newv;
-        width.setIntValue(widthv);
+        cropdata.setWidth(newv);
+        width.setIntValue(cropdata.getWidth());
+        imagePanel.display(cropdata);
     }
 
     private void heightChanged(ChangeEvent evt) {
         int newv = height.getIntValue();
         if (usewidthheight) {
-            if (newv + topv -1> imageheight) {
-                newv = imageheight - topv+ 1;
+            if (newv + cropdata.getTop() - 1 > cropdata.getImageHeight()) {
+                newv = cropdata.getImageHeight() - cropdata.getTop() + 1;
             }
-            bottomv = newv + topv - 1;
-            bottom.setIntValue(bottomv);
+            cropdata.setBottom(newv + cropdata.getTop() - 1);
+            bottom.setIntValue(cropdata.getBottom());
         }
-        heightv = newv;
-        height.setIntValue(heightv);
+        cropdata.setHeight(newv);
+        height.setIntValue(cropdata.getHeight());
+        imagePanel.display(cropdata);
     }
 
     private void usewidthheightItemStateChanged(ItemEvent evt) {

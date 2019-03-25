@@ -15,23 +15,41 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
-import javax.swing.JPanel;
-
 /**
  *
  * @author richard
  */
-public class ImagePanel extends JPanel {
-
-    private final ImageDisplay imagefield;
-
-    @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImagePanel() {
-        imagefield = new ImageDisplay();
-        add(imagefield);
+public class Zoom {
+     public int zoomin;
+     public int zoomout;
+     
+     public Zoom (){
+         zoomin = 1;
+         zoomout = 1;
+     }
+     
+      public String getZoomText() {
+        return zoomin + ":" + zoomout;
     }
-    
-    public void display(ImageAndCrops cropdata) {
-        imagefield.display(cropdata);
+
+    public void zoomOut() {
+        if (zoomin != 1) {
+            zoomin /= 2;
+        } else {
+            zoomout *= 2;
+        }
+    }
+
+    public void zoomIn() {
+        if (zoomout != 1) {
+            zoomout /= 2;
+        } else {
+            zoomin *= 2;
+        }
+    }
+
+    public void zoomReset() {
+        zoomin = 1;
+        zoomout = 1;
     }
 }

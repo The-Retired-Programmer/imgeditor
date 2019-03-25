@@ -15,23 +15,29 @@
  */
 package uk.theretiredprogrammer.imgeditor.crop;
 
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 /**
  *
  * @author richard
  */
-public class ImagePanel extends JPanel {
+public class MessagePanel extends HorizontalBoxPanel {
 
-    private final ImageDisplay imagefield;
+    private final JLabel message;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImagePanel() {
-        imagefield = new ImageDisplay();
-        add(imagefield);
+    public MessagePanel() {
+        message = new JLabel();
+        add(message);
     }
     
-    public void display(ImageAndCrops cropdata) {
-        imagefield.display(cropdata);
+    public void displayMessage(String mess) {
+        message.setText(mess);
     }
+    
+    public void clearMessage() {
+        message.setText("");
+    }
+    
+
 }
