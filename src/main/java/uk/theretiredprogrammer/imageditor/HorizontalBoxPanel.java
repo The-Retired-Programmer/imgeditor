@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -48,10 +48,12 @@ public class HorizontalBoxPanel extends JPanel {
     
     public final JButton button(String text, ActionListener actionListener) {
         JButton field = new JButton();
-        field.addActionListener(actionListener);
         field.setText(text);
+        field.setActionCommand(text);
+        field.addActionListener(actionListener);
         //field.setBorder(new EmptyBorder(2,10,2,10));
         add(field);
+        
         return field;
     }
 }

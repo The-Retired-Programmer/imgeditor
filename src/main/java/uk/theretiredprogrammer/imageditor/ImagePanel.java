@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
-import java.awt.event.ActionListener;
-import javax.swing.JTextField;
+import java.awt.image.BufferedImage;
+import javax.swing.JPanel;
 
 /**
  *
  * @author richard
  */
-public class ControlTextField extends JTextField {
-    
-    public ControlTextField() {
-        super();
-    }
-    
+public class ImagePanel extends JPanel {
+
+    private final ImageDisplay imagefield;
+
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ControlTextField(ActionListener actionListener) {
-        setHorizontalAlignment(JTextField.RIGHT);
-        setColumns(6);
-        addActionListener(actionListener);
+    public ImagePanel() {
+        imagefield = new ImageDisplay();
+        add(imagefield);
     }
     
-    @Override
-    public void setEnabled(boolean enable) {
-        super.setEnabled(enable);
-        setBackground( enable ?new java.awt.Color(255, 255, 255):new java.awt.Color(192, 192, 192));
+    public void display(BufferedImage image) {
+        imagefield.display(image);
     }
 }

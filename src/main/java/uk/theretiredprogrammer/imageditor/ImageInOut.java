@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 richard.
+ * Copyright 2019 richard.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-
 
 /**
  *
  * @author richard
  */
-public class ExtractedUseOfImageProcessing {
+public class ImageInOut {
+    
+    private FileObject from;
 
-    private void makeThumbnails(FileObject file) throws IOException {
-        File f = FileUtil.toFile(file);
-        BufferedImage img;
-        img = ImageIO.read(f);
-//        ImageProcessing ip = new ImageProcessing();
-//        ip.setImage(img);
-//        ip.makeThumbnails();
-//        File mtn = new File(mediumthumbnailroot + file.getName() + ".jpg");
-//        ImageIO.write(ip.getMediumThumbnail(), "jpg", mtn);
-//        File stn = new File(smallthumbnailroot + file.getName() + ".jpg");
-//        ImageIO.write(ip.getSmallThumbnail(), "jpg", stn);
+    public ImageInOut(FileObject fo) throws IOException {
+        this.from = fo;
+    }
+    
+    public BufferedImage getImage() throws IOException {
+        return ImageIO.read(FileUtil.toFile(from));
+    }
+    
+    public final void save(BufferedImage image) throws IOException {
+        String f = from.getName() + "-" + image.getWidth() + "x" + image.getHeight() + "." + from.getExt();
+        try (OutputStream out = from.getParent().createAndOpen(f)) {
+            String mimetype = from.getMIMEType();
+            ImageIO.write(image, mimetype.startsWith("image/") ? mimetype.substring(6) : "unknown", out);
+        }
     }
 }

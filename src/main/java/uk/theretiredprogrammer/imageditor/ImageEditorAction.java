@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,25 +25,25 @@ import org.openide.awt.ActionRegistration;
 
 @ActionID(
         category = "Images",
-        id = "uk.theretiredprogrammer.imgeditor.crop.Crop"
+        id = "uk.theretiredprogrammer.imageditor"
 )
 @ActionRegistration(
-        iconBase = "uk/theretiredprogrammer/imgeditor/cut_red.png",
-        displayName = "Crop"
+        iconBase = "uk/theretiredprogrammer/imageditor/paintbrush.png",
+        displayName = "Open with Image Editor"
 )
-@ActionReference(path = "Loaders/image/png-gif-jpeg-bmp/Actions", position = 350)
-public final class Crop implements ActionListener {
+@ActionReference(path = "Loaders/image/png-gif-jpeg-bmp/Actions", position = 100)
+public final class ImageEditorAction implements ActionListener {
 
     private final DataObject context;
 
-    public Crop(DataObject context) {
+    public ImageEditorAction(DataObject context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
         try {
-            CropTopComponent tc = new CropTopComponent();
+            ImageEditorTopComponent tc = new ImageEditorTopComponent();
             tc.configure(context.getPrimaryFile());
             tc.open();
             tc.requestActive();

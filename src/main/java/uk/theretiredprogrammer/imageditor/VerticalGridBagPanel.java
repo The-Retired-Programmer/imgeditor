@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -131,6 +131,12 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    public final JCheckBox labeledCheckbox(String text, 
+            boolean state, ItemListener itemListener) {
+        JCheckBox cbox = labeledCheckbox(text, itemListener);
+        cbox.setSelected(state);
+        return cbox;
+    }
     public final JButton centredButton(String text, 
             ActionListener actionListener) {
         GridBagConstraints c = new GridBagConstraints();

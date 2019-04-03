@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -39,11 +39,17 @@ public class ImageProcessing {
                 img.getTransparency() == Transparency.OPAQUE
                 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
     }
+    
+    public static BufferedImage scale(BufferedImage img, int width, int height){
+        return scaleImage(img, width, height, 
+                img.getTransparency() == Transparency.OPAQUE
+                ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+    }
 
 //    private static final int SMALLTHUMBNAILHEIGHT = 100;
 //    private static final int MEDIUMTHUMBNAILHEIGHT = 400;
 //    private static final int MEDIUM2SMALLPOWER = 2; // ie small* 2^power = medium
-    private BufferedImage img;
+//    private BufferedImage img;
 //    private BufferedImage mediumThumbnail;
 //    private BufferedImage smallThumbnail;
 //

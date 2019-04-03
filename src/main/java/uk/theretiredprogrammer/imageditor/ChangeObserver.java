@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.ArrayList;
 
 /**
  *
  * @author richard
  */
-public class VerticalBoxPanel extends JPanel {
+public class ChangeObserver<T> extends ArrayList<ChangeListener<T>> {
     
-    @SuppressWarnings("OverridableMethodCallInConstructor")
-    public VerticalBoxPanel() {
-        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+    void fire(T t) {
+        this.forEach(l->l.changedDetected(t));
     }
-    
 }

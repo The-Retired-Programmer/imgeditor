@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -27,9 +27,12 @@ import javax.swing.event.ChangeListener;
  * @author richard
  */
 public class ControlIntSpinnerField extends JSpinner {
-    
+
+    private final ChangeListener changeListener;
+
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ControlIntSpinnerField(int initvalue, int minvalue, int maxvalue, ChangeListener changeListener) {
+        this.changeListener = changeListener;
         @SuppressWarnings("LeakingThisInConstructor")
         JFormattedTextField textfield = getTextField(this);
         textfield.setHorizontalAlignment(JTextField.RIGHT);
@@ -38,33 +41,29 @@ public class ControlIntSpinnerField extends JSpinner {
         setModel(new SpinnerNumberModel(initvalue, minvalue, maxvalue, 1));
         setEditor(new JSpinner.NumberEditor(this, "######"));
     }
-    
-    @Override
-    public void setEnabled(boolean enable) {
-        super.setEnabled(enable);
-        getTextField(this).setBackground( enable ?new java.awt.Color(255, 255, 255):new java.awt.Color(192, 192, 192));
-    }
-    
+
     public int getIntValue() {
         return Integer.parseInt(getTextField(this).getText());
     }
-    
+
     public void setIntValue(int value) {
+        removeChangeListener(changeListener);
         getTextField(this).setValue(value);
+        addChangeListener(changeListener);
     }
-    
+
     /**
-     * Return the formatted text field used by the editor, or
-     * null if the editor doesn't descend from JSpinner.DefaultEditor.
+     * Return the formatted text field used by the editor, or null if the editor
+     * doesn't descend from JSpinner.DefaultEditor.
      */
     private JFormattedTextField getTextField(JSpinner spinner) {
         JComponent editor = spinner.getEditor();
         if (editor instanceof JSpinner.DefaultEditor) {
-            return ((JSpinner.DefaultEditor)editor).getTextField();
+            return ((JSpinner.DefaultEditor) editor).getTextField();
         } else {
             System.err.println("Unexpected editor type: "
-                               + spinner.getEditor().getClass()
-                               + " isn't a descendant of DefaultEditor");
+                    + spinner.getEditor().getClass()
+                    + " isn't a descendant of DefaultEditor");
             return null;
         }
     }

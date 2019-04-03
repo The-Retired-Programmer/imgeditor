@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
  *
  * @author richard
  */
-public class ImagePanel extends JPanel {
-
-    private final ImageDisplay imagefield;
-
+public class VerticalBoxPanel extends JPanel {
+    
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ImagePanel() {
-        imagefield = new ImageDisplay();
-        add(imagefield);
+    public VerticalBoxPanel() {
+        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     }
     
-    public void display(ImageAndCrops cropdata) {
-        imagefield.display(cropdata);
-    }
 }

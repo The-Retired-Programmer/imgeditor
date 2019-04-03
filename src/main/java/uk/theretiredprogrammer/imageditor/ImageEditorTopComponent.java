@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -30,44 +31,50 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//uk.theretiredprogrammer.imgeditor.crop//Crop//EN",
+        dtd = "-//uk.theretiredprogrammer.imageditor//ImageEditor//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "CropTopComponent",
-        iconBase = "uk/theretiredprogrammer/imgeditor/cut_red.png",
+        preferredID = "ImageEditorTopComponent",
+        iconBase = "uk/theretiredprogrammer/imageditor/paintbrush.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER
 )
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
-public class CropTopComponent extends TopComponent {
+public class ImageEditorTopComponent extends TopComponent {
     
         
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public CropTopComponent() {
-        setName("Crop");
-        setToolTipText("This is a Crop window");
+    public ImageEditorTopComponent() {
+        setName("ImageEditor");
+        setToolTipText("Image Editor");
     }
 
     public void configure(FileObject fo) throws IOException {
         String filename = fo.getNameExt();
         setDisplayName(filename);
-        // setup the control panel
-        ControlPanel controlPanel = new ControlPanel();
+        ImageInOut iio = new ImageInOut(fo);
+        BufferedImage image = iio.getImage();
         // config the message panel
         MessagePanel messagePanel = new MessagePanel();
-        
-        // configure the info panel
-        InfoPanel infoPanel = new InfoPanel(controlPanel);
-        infoPanel.setFilename(filename);
-        infoPanel.setFilepath(fo.getParent().getPath());
         // configure the image panel
         ImagePanel imagePanel = new ImagePanel();
+        // configure the info panel
+        ModelZoom zoommodel = new ModelZoom(image);
+        zoommodel.addChangeListener(img->imagePanel.display(img));
+        InfoPanel infoPanel = new InfoPanel(zoommodel);
+        infoPanel.setFilename(filename);
+        infoPanel.setFilepath(fo.getParent().getPath());
+        infoPanel.setImageheight(image.getHeight());
+        infoPanel.setImagewidth(image.getWidth());
         // configure the control panel
-        controlPanel.setup(imagePanel, messagePanel, fo);
+        ModelCrop cropmodel = new ModelCrop(image);
+        ModelResize resizemodel = new ModelResize(image);
+        ControlPanel controlPanel = new ControlPanel(resizemodel, cropmodel, zoommodel);
+        resizemodel.addChangeListener(img -> controlPanel.resizeImageChanged(img));
+        cropmodel.addChangeListener(img -> controlPanel.cropImageChanged(img));
         //
-        infoPanel.setImageheight(controlPanel.getImageHeight());
-        infoPanel.setImagewidth(controlPanel.getImageWidth());
         // create the tc layout and insert all required panels
+        //
         setLayout(new BorderLayout());
         //left hand is control
         JScrollPane controlScrollPane = new JScrollPane();

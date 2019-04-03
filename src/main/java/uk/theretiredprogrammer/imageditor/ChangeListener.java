@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
-import javax.swing.JLabel;
 
 /**
  *
  * @author richard
  */
-public class MessagePanel extends HorizontalBoxPanel {
-
-    private final JLabel message;
-
-    @SuppressWarnings("OverridableMethodCallInConstructor")
-    public MessagePanel() {
-        message = new JLabel();
-        add(message);
-    }
+public interface ChangeListener<T> {
     
-    public void displayMessage(String mess) {
-        message.setText(mess);
-    }
-    
-    public void clearMessage() {
-        message.setText("");
-    }
-    
-
+    public void changedDetected(T t);
 }

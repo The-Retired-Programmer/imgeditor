@@ -13,43 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
+
+import javax.swing.JLabel;
 
 /**
  *
  * @author richard
  */
-public class Zoom {
-     public int zoomin;
-     public int zoomout;
-     
-     public Zoom (){
-         zoomin = 1;
-         zoomout = 1;
-     }
-     
-      public String getZoomText() {
-        return zoomin + ":" + zoomout;
-    }
+public class MessagePanel extends HorizontalBoxPanel {
 
-    public void zoomOut() {
-        if (zoomin != 1) {
-            zoomin /= 2;
-        } else {
-            zoomout *= 2;
-        }
-    }
+    private final JLabel message;
 
-    public void zoomIn() {
-        if (zoomout != 1) {
-            zoomout /= 2;
-        } else {
-            zoomin *= 2;
-        }
+    @SuppressWarnings("OverridableMethodCallInConstructor")
+    public MessagePanel() {
+        message = new JLabel();
+        add(message);
     }
+    
+    public void displayMessage(String mess) {
+        message.setText(mess);
+    }
+    
+    public void clearMessage() {
+        message.setText("");
+    }
+    
 
-    public void zoomReset() {
-        zoomin = 1;
-        zoomout = 1;
-    }
 }

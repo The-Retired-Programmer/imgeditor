@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.theretiredprogrammer.imgeditor.crop;
+package uk.theretiredprogrammer.imageditor;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -32,37 +32,39 @@ public class InfoPanel extends VerticalBoxPanel {
     private final JLabel filename;
     private final JLabel filepath;
     private final JLabel zoomratiolabel;
-
-    private final ControlPanel controlPanel;
+    private final ModelZoom zoomtransformer;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public InfoPanel(ControlPanel controlPanel) {
-        this.controlPanel = controlPanel;
+    public InfoPanel(ModelZoom zoomtransformer) {
+        this.zoomtransformer = zoomtransformer;
         filename = filePanel.doubleLabel("File:");
         filepath = filePanel.doubleLabel("File location:");
         imagewidth = zoomPanel.doubleLabel("Image width:");
         imageheight = zoomPanel.doubleLabel("Image height:");
-        zoomPanel.button("Zoom Out", this::zoomOutActionPerformed);
-        zoomPanel.button("Zoom In", this::zoomInActionPerformed);
-        zoomPanel.button("Zoom Reset", this::zoomResetActionPerformed);
+        zoomPanel.button("Zoom Out", this::zoomout);
+        zoomPanel.button("Zoom In", this::zoomin);
+        zoomPanel.button("Zoom Reset", this::zoomreset);
         zoomratiolabel = zoomPanel.doubleLabel("Zoom Ratio");
         zoomratiolabel.setText("1:1");
         add(filePanel);
         add(zoomPanel);
     }
-
-    private void zoomOutActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(controlPanel.zoomOut());
+    
+    private void zoomout(ActionEvent evt) {
+        zoomtransformer.zoomout();
+        zoomratiolabel.setText(zoomtransformer.getZoomRatio());
     }
-
-    private void zoomInActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(controlPanel.zoomIn());
+    
+    private void zoomin(ActionEvent evt) {
+        zoomtransformer.zoomin();
+        zoomratiolabel.setText(zoomtransformer.getZoomRatio());
     }
-
-    private void zoomResetActionPerformed(ActionEvent evt) {
-        zoomratiolabel.setText(controlPanel.zoomReset());
+    
+    private void zoomreset(ActionEvent evt) {
+        zoomtransformer.zoomreset();
+        zoomratiolabel.setText(zoomtransformer.getZoomRatio());
     }
-
+    
     public void setFilename(String fn) {
         filename.setText(fn);
     }
@@ -77,5 +79,9 @@ public class InfoPanel extends VerticalBoxPanel {
 
     public void setImageheight(int height) {
         imageheight.setText(Integer.toString(height));
+    }
+    
+    public void setZoomRatio(String r) {
+        zoomratiolabel.setText(r);
     }
 }
