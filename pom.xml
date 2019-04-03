@@ -6,8 +6,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
     
-    <name>Img Editor NB Plugin</name>
-    <description>Netbeans Plug-in - .jpeg resizing and cropping</description>
+    <name>Image Editor NB Plugin</name>
+    <description>Netbeans Plug-in - resizing, cropping and other image transforms</description>
  
     <url>http://www.theretiredprogrammer.uk/imgeditor</url>
     
