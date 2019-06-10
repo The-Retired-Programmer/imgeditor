@@ -45,4 +45,13 @@ public class ImageInOut {
             ImageIO.write(image, mimetype.startsWith("image/") ? mimetype.substring(6) : "unknown", out);
         }
     }
+    
+    public final void save(BufferedImage image, String foldername) throws IOException {
+        FileObject tofolder = from.getParent().getParent().getFileObject(foldername);
+        String f = from.getName() + "-" + image.getWidth() + "x" + image.getHeight() + "." + from.getExt();
+        try (OutputStream out = tofolder.createAndOpen(f)) {
+            String mimetype = from.getMIMEType();
+            ImageIO.write(image, mimetype.startsWith("image/") ? mimetype.substring(6) : "unknown", out);
+        }
+    }
 }

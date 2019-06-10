@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -77,8 +78,19 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    public final ControlTextField labeledTextField(String text, String text2, ActionListener actionListener) {
+        ControlTextField field = new ControlTextField(text2, actionListener);
+        insertfield(text, field);
+        return field;
+    }
+    
     public final ControlTextField labeledTextField(String text, ActionListener actionListener) {
         ControlTextField field = new ControlTextField(actionListener);
+        insertfield(text, field);
+        return field;
+    }
+        
+    private void insertfield(String labeltext, JComponent component) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4,4,4,4);
@@ -87,12 +99,11 @@ public class VerticalGridBagPanel extends JPanel {
         c.gridy = row++;
         c.gridwidth = 1;
         JLabel label = new JLabel();
-        label.setText(text);
-        label.setLabelFor(field);
+        label.setText(labeltext);
+        label.setLabelFor(component);
         add(label, c);
         c.gridx++;
-        add(field, c);
-        return field;
+        add(component, c);
     }
     
     public final ControlIntSpinnerField labeledIntSpinnerField(String text, int init, int min, int max, ChangeListener changeListener) {

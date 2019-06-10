@@ -16,8 +16,10 @@
 package uk.theretiredprogrammer.imageditor;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 
 /**
@@ -36,12 +38,19 @@ public class ControlPanel extends VerticalGridBagPanel {
     private final ControlIntSpinnerField top;
     private final ControlIntSpinnerField width;
     //
+    private final ModelSave savemodel;
+    private final JCheckBox inplace;
+    private final ControlTextField savefoldername;
+    private final ControlIntSpinnerField percentage;
+    private final ControlIntSpinnerField minwidth;
+    //
     private final ModelZoom zoommodel;
 
     //
-    public ControlPanel(ModelResize resizemodel, ModelCrop cropmodel, ModelZoom zoommodel) throws IOException {
+    public ControlPanel(ModelResize resizemodel, ModelCrop cropmodel, ModelSave savemodel, ModelZoom zoommodel) throws IOException {
         this.resizemodel = resizemodel;
         this.cropmodel = cropmodel;
+        this.savemodel = savemodel;
         this.zoommodel = zoommodel;
         //
         centredLabel("RESIZE CONTROL");
@@ -58,9 +67,15 @@ public class ControlPanel extends VerticalGridBagPanel {
         skipRow();
         centredButton("Reset Crop", this::resetCrop);
         skipRow();
+        centredLabel("SAVE CONTROL");
+        inplace = labeledCheckbox("Save in place:", savemodel.isInplace(), this::inplaceChanged);
+        savefoldername = labeledTextField("Save Directory (../<folder>):", savemodel.getSavefoldername(), this::savefoldernamechanged);
         centredButton("Save", this::save);
+        percentage = labeledIntSpinnerField("%:", savemodel.getPercentage(), 1, 99, this::percentageChanged);
+        minwidth = labeledIntSpinnerField("Min width:", savemodel.getMinwidth(), 1, Integer.MAX_VALUE, this::minwidthChanged);
+        centredButton("Save Multiple", this::savemultiple);
     }
-    
+
     public void resizeImageChanged(BufferedImage image) {
         if (cropmodel.setImage(image)) {
             left.setIntValue(cropmodel.getLeft());
@@ -94,10 +109,10 @@ public class ControlPanel extends VerticalGridBagPanel {
         }
         resizemodel.fireImageChange();
     }
-    
+
     public void cropImageChanged(BufferedImage image) {
-        zoommodel.setImage(image);
-        zoommodel.fireImageChange();
+        savemodel.setImage(image);
+        savemodel.fireImageChange();
     }
 
     private void resetCrop(ActionEvent evt) {
@@ -138,7 +153,32 @@ public class ControlPanel extends VerticalGridBagPanel {
         cropmodel.fireImageChange();
     }
 
+    public void saveImageChanged(BufferedImage image) {
+        zoommodel.setImage(image);
+        zoommodel.fireImageChange();
+    }
+
+    private void percentageChanged(ChangeEvent evt) {
+        savemodel.setPercentage(percentage.getIntValue());
+    }
+
+    private void minwidthChanged(ChangeEvent evt) {
+        savemodel.setMinwidth(minwidth.getIntValue());
+    }
+
+    private void inplaceChanged(ItemEvent ivt) {
+        savemodel.setInplace(inplace.isSelected());
+    }
+
+    private void savefoldernamechanged(ActionEvent evt) {
+        savemodel.setSavefoldername(savefoldername.getText());
+    }
+
     private void save(ActionEvent evt) {
-        // TODO - action removed at the moment
+        savemodel.save();
+    }
+
+    private void savemultiple(ActionEvent evt) {
+        savemodel.savemultiple();
     }
 }

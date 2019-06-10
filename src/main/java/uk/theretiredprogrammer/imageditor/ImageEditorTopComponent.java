@@ -69,9 +69,11 @@ public class ImageEditorTopComponent extends TopComponent {
         // configure the control panel
         ModelCrop cropmodel = new ModelCrop(image);
         ModelResize resizemodel = new ModelResize(image);
-        ControlPanel controlPanel = new ControlPanel(resizemodel, cropmodel, zoommodel);
+        ModelSave savemodel = new ModelSave(image,iio);
+        ControlPanel controlPanel = new ControlPanel(resizemodel, cropmodel, savemodel, zoommodel);
         resizemodel.addChangeListener(img -> controlPanel.resizeImageChanged(img));
         cropmodel.addChangeListener(img -> controlPanel.cropImageChanged(img));
+        savemodel.addChangeListener(img-> controlPanel.saveImageChanged(img));
         //
         // create the tc layout and insert all required panels
         //

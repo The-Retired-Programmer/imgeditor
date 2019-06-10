@@ -35,6 +35,14 @@ public class ControlTextField extends JTextField {
         addActionListener(actionListener);
     }
     
+    @SuppressWarnings("OverridableMethodCallInConstructor")
+    public ControlTextField(String defaultvalue, ActionListener actionListener) {
+        this.setText(defaultvalue);
+        setHorizontalAlignment(JTextField.RIGHT);
+        setColumns(6);
+        addActionListener(actionListener);
+    }
+    
     @Override
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
