@@ -24,11 +24,11 @@ import org.openide.filesystems.FileObject;
 import org.openide.windows.TopComponent;
 
 /**
+ * The image editor display (in the editor area).
+ *
+ * Contains both the image display, controls and various feedback areas.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
- */
-/**
- * Top component which displays something.
  */
 @ConvertAsProperties(
         dtd = "-//uk.theretiredprogrammer.imageditor//ImageEditor//EN",
@@ -41,14 +41,22 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 public class ImageEditorTopComponent extends TopComponent {
-    
-        
+
+    /**
+     * Contructor
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ImageEditorTopComponent() {
         setName("ImageEditor");
         setToolTipText("Image Editor");
     }
 
+    /**
+     * Setup the image editor components within the top component.
+     *
+     * @param fo The fileobject of the image file to be edited/displayed
+     * @throws IOException if a problem
+     */
     public void configure(FileObject fo) throws IOException {
         String filename = fo.getNameExt();
         setDisplayName(filename);
@@ -60,7 +68,7 @@ public class ImageEditorTopComponent extends TopComponent {
         ImagePanel imagePanel = new ImagePanel();
         // configure the info panel
         ModelZoom zoommodel = new ModelZoom(image);
-        zoommodel.addChangeListener(img->imagePanel.display(img));
+        zoommodel.addChangeListener(img -> imagePanel.display(img));
         InfoPanel infoPanel = new InfoPanel(zoommodel);
         infoPanel.setFilename(filename);
         infoPanel.setFilepath(fo.getParent().getPath());
@@ -69,11 +77,11 @@ public class ImageEditorTopComponent extends TopComponent {
         // configure the control panel
         ModelCrop cropmodel = new ModelCrop(image);
         ModelResize resizemodel = new ModelResize(image);
-        ModelSave savemodel = new ModelSave(image,iio);
+        ModelSave savemodel = new ModelSave(image, iio);
         ControlPanel controlPanel = new ControlPanel(resizemodel, cropmodel, savemodel, zoommodel);
         resizemodel.addChangeListener(img -> controlPanel.resizeImageChanged(img));
         cropmodel.addChangeListener(img -> controlPanel.cropImageChanged(img));
-        savemodel.addChangeListener(img-> controlPanel.saveImageChanged(img));
+        savemodel.addChangeListener(img -> controlPanel.saveImageChanged(img));
         //
         // create the tc layout and insert all required panels
         //

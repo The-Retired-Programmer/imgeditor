@@ -18,6 +18,7 @@ package uk.theretiredprogrammer.imageditor;
 import javax.swing.JLabel;
 
 /**
+ * The message panel for the image editor
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -25,19 +26,28 @@ public class MessagePanel extends HorizontalBoxPanel {
 
     private final JLabel message;
 
+    /**
+     * Constructor
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public MessagePanel() {
         message = new JLabel();
         add(message);
     }
-    
+
+    /**
+     * Display a message in the message panel
+     *
+     * @param mess the message
+     */
     public void displayMessage(String mess) {
         message.setText(mess);
     }
-    
+
+    /**
+     * Clear the display message
+     */
     public void clearMessage() {
         message.setText("");
     }
-    
-
 }

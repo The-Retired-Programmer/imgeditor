@@ -19,14 +19,18 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
+ * A basic panel with vertical Box Layout
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class VerticalBoxPanel extends JPanel {
-    
+
+    /**
+     * Constructor
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public VerticalBoxPanel() {
-        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
-    
+
 }

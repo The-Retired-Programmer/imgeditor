@@ -29,19 +29,30 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 
 /**
- *
+ * A panel with a VerticalGridBag Layout, includes method to insert
+ * various components within the grid.
+ * 
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class VerticalGridBagPanel extends JPanel {
     
     private int row;
     
+    /**
+     * Constructor
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public VerticalGridBagPanel() {
         setLayout(new GridBagLayout());
         row = 0;
     }
     
+    /**
+     * Add a centred label span two grid columns as a row
+     * 
+     * @param text the label text
+     * @return the created label component
+     */
     public final JLabel centredLabel(String text) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -58,6 +69,13 @@ public class VerticalGridBagPanel extends JPanel {
         return label;
     }
     
+    /**
+     * Add a pair of labels as a row
+     * 
+     * @param text the text of first label
+     * @param text2 the text of the second label
+     * @return the created second (rh) label
+     */
     public final JLabel doubleLabel(String text, String text2) {
         JLabel field = new JLabel(text2);
         GridBagConstraints c = new GridBagConstraints();
@@ -78,12 +96,27 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    /**
+     * add a label and a text field as a row
+     * 
+     * @param text the label text
+     * @param text2 the text field initial value
+     * @param actionListener the listener for changes to text field value
+     * @return the created text field component
+     */
     public final ControlTextField labeledTextField(String text, String text2, ActionListener actionListener) {
         ControlTextField field = new ControlTextField(text2, actionListener);
         insertfield(text, field);
         return field;
     }
     
+    /**
+     * add a label and a text field as a row
+     * 
+     * @param text the label text
+     * @param actionListener the listener for changes to text field value
+     * @return the created text field component
+     */
     public final ControlTextField labeledTextField(String text, ActionListener actionListener) {
         ControlTextField field = new ControlTextField(actionListener);
         insertfield(text, field);
@@ -106,6 +139,16 @@ public class VerticalGridBagPanel extends JPanel {
         add(component, c);
     }
     
+    /**
+     * Add a label and a intSpinnerField as a row
+     * 
+     * @param text the label text
+     * @param init the initial value of the spinner
+     * @param min the minimum value of the spinner
+     * @param max the maximum value of the spinner
+     * @param changeListener the listener for changes to the spinner value
+     * @return the created intSpinnerField object
+     */
     public final ControlIntSpinnerField labeledIntSpinnerField(String text, int init, int min, int max, ChangeListener changeListener) {
         ControlIntSpinnerField field = new ControlIntSpinnerField(init, min, max, changeListener);
         GridBagConstraints c = new GridBagConstraints();
@@ -124,6 +167,13 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    /**
+     * Add a labelled Checkbox as a row
+     * 
+     * @param text the label text
+     * @param itemListener the listener for changes to the checkbox value
+     * @return the created checkbox item
+     */
     public final JCheckBox labeledCheckbox(String text, 
             ItemListener itemListener) {
         GridBagConstraints c = new GridBagConstraints();
@@ -142,12 +192,28 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    /**
+     *  Add a labelled Checkbox as a row
+     * 
+     * @param text the label text
+     * @param state the initial state of the checkbox
+     * @param itemListener the listener for changes to the checkbox value
+     * @return the created checkbox item
+     */
     public final JCheckBox labeledCheckbox(String text, 
             boolean state, ItemListener itemListener) {
         JCheckBox cbox = labeledCheckbox(text, itemListener);
         cbox.setSelected(state);
         return cbox;
     }
+
+    /**
+     * Add a Button spanning the two columns as a row
+     * 
+     * @param text the button text
+     * @param actionListener  the listener for button click actions
+     * @return the created button component
+     */
     public final JButton centredButton(String text, 
             ActionListener actionListener) {
         GridBagConstraints c = new GridBagConstraints();
@@ -165,6 +231,9 @@ public class VerticalGridBagPanel extends JPanel {
         return field;
     }
     
+    /**
+     * Insert an empty row into the layout (is skip a row)
+     */
     public final void skipRow() {
         row++;
     }

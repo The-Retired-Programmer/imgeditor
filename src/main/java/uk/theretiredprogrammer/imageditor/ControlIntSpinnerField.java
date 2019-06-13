@@ -23,6 +23,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 
 /**
+ * A UI component which implements an integer valued Spinner.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -30,6 +31,15 @@ public class ControlIntSpinnerField extends JSpinner {
 
     private final ChangeListener changeListener;
 
+    /**
+     * Create the UI component (integer spinner)
+     *
+     * @param initvalue the initial value to be displayed
+     * @param minvalue the minimum value of the spinner
+     * @param maxvalue the minimum value of the spinner
+     * @param changeListener the change listener to be attached to this
+     * component
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ControlIntSpinnerField(int initvalue, int minvalue, int maxvalue, ChangeListener changeListener) {
         this.changeListener = changeListener;
@@ -42,20 +52,26 @@ public class ControlIntSpinnerField extends JSpinner {
         setEditor(new JSpinner.NumberEditor(this, "######"));
     }
 
+    /**
+     * Get the integer value of this component
+     *
+     * @return the current integer value
+     */
     public int getIntValue() {
         return Integer.parseInt(getTextField(this).getText());
     }
 
+    /**
+     * Set the value of this compoenent
+     *
+     * @param value the new integer value
+     */
     public void setIntValue(int value) {
         removeChangeListener(changeListener);
         getTextField(this).setValue(value);
         addChangeListener(changeListener);
     }
 
-    /**
-     * Return the formatted text field used by the editor, or null if the editor
-     * doesn't descend from JSpinner.DefaultEditor.
-     */
     private JFormattedTextField getTextField(JSpinner spinner) {
         JComponent editor = spinner.getEditor();
         if (editor instanceof JSpinner.DefaultEditor) {

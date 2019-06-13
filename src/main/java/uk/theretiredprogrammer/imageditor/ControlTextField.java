@@ -19,22 +19,37 @@ import java.awt.event.ActionListener;
 import javax.swing.JTextField;
 
 /**
+ * A UI component which implements a text field
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class ControlTextField extends JTextField {
-    
+
+    /**
+     * Constructor
+     */
     public ControlTextField() {
         super();
     }
-    
+
+    /**
+     * Constructor
+     *
+     * @param actionListener listener to be attached to field content change
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ControlTextField(ActionListener actionListener) {
         setHorizontalAlignment(JTextField.RIGHT);
         setColumns(6);
         addActionListener(actionListener);
     }
-    
+
+    /**
+     * Constructor
+     *
+     * @param defaultvalue the initial value for the text field content
+     * @param actionListener listener to be attached to field content change
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ControlTextField(String defaultvalue, ActionListener actionListener) {
         this.setText(defaultvalue);
@@ -42,10 +57,10 @@ public class ControlTextField extends JTextField {
         setColumns(6);
         addActionListener(actionListener);
     }
-    
+
     @Override
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
-        setBackground( enable ?new java.awt.Color(255, 255, 255):new java.awt.Color(192, 192, 192));
+        setBackground(enable ? new java.awt.Color(255, 255, 255) : new java.awt.Color(192, 192, 192));
     }
 }

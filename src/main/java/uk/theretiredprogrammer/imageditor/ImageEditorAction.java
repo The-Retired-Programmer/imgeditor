@@ -24,7 +24,10 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 
 /**
- *
+ * The Action to call the img editor.
+ * 
+ * It adds the "Open with Img Editor" menu item to any recognised image type.
+ * 
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 @ActionID(
@@ -40,6 +43,11 @@ public final class ImageEditorAction implements ActionListener {
 
     private final DataObject context;
 
+    /**
+     * Constructor
+     * 
+     * @param context the dataobject of selected image file
+     */
     public ImageEditorAction(DataObject context) {
         this.context = context;
     }

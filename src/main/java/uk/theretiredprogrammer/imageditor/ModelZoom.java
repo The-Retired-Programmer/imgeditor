@@ -18,14 +18,20 @@ package uk.theretiredprogrammer.imageditor;
 import java.awt.image.BufferedImage;
 
 /**
+ * The Model for image zooming.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class ModelZoom extends Model {
 
-    public int zoomin;
-    public int zoomout;
+    private int zoomin;
+    private int zoomout;
 
+    /**
+     * Constructor
+     *
+     * @param image the models input image
+     */
     public ModelZoom(BufferedImage image) {
         super(image);
         zoomin = 1;
@@ -48,6 +54,9 @@ public class ModelZoom extends Model {
         }
     }
 
+    /**
+     * Zoom out - decrease zoom by power of 2
+     */
     public void zoomout() {
         if (zoomin != 1) {
             zoomin /= 2;
@@ -58,6 +67,9 @@ public class ModelZoom extends Model {
         fireImageChange();
     }
 
+    /**
+     * Zoom out - increase zoom by power of 2
+     */
     public void zoomin() {
         if (zoomout != 1) {
             zoomout /= 2;
@@ -68,13 +80,21 @@ public class ModelZoom extends Model {
         fireImageChange();
     }
 
+    /**
+     * Reset Zoom to 1:1
+     */
     public void zoomreset() {
         zoomin = 1;
         zoomout = 1;
         fireRequired = true;
         fireImageChange();
     }
-    
+
+    /**
+     * Get the current zoom ratio.
+     *
+     * @return the zoom ratio string (expressed as 1:n or n:1)
+     */
     public String getZoomRatio() {
         return zoomin + ":" + zoomout;
     }

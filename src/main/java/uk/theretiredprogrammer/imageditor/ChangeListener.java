@@ -15,12 +15,19 @@
  */
 package uk.theretiredprogrammer.imageditor;
 
-
 /**
  *
+ * The basic ChangeListener Interface
+ *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
+ * @param <T> the class of the parameter to be passed on change detection
  */
 public interface ChangeListener<T> {
-    
+
+    /**
+     * Called when change is detected.
+     *
+     * @param t the parameter passed
+     */
     public void changedDetected(T t);
 }

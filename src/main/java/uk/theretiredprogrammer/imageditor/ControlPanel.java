@@ -23,6 +23,9 @@ import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 
 /**
+ * The control panel - a segment of the img editor UI
+ *
+ * contains all control components - buttons, number entry, checkboxes etc.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -45,8 +48,15 @@ public class ControlPanel extends VerticalGridBagPanel {
     private final ControlIntSpinnerField minwidth;
     //
     private final ModelZoom zoommodel;
-
-    //
+    /**
+     * Create the control panel.
+     *
+     * @param resizemodel the resize model
+     * @param cropmodel the crop model
+     * @param savemodel the save model
+     * @param zoommodel the zoom model
+     * @throws IOException if problems
+     */
     public ControlPanel(ModelResize resizemodel, ModelCrop cropmodel, ModelSave savemodel, ModelZoom zoommodel) throws IOException {
         this.resizemodel = resizemodel;
         this.cropmodel = cropmodel;
@@ -76,6 +86,13 @@ public class ControlPanel extends VerticalGridBagPanel {
         centredButton("Save Multiple", this::savemultiple);
     }
 
+    /**
+     * Change Listener for resize image - sets the crop model image as the
+     * resulting resize image
+     *
+     * @param image the image resulting from the application of the resize
+     * operation
+     */
     public void resizeImageChanged(BufferedImage image) {
         if (cropmodel.setImage(image)) {
             left.setIntValue(cropmodel.getLeft());
@@ -94,7 +111,7 @@ public class ControlPanel extends VerticalGridBagPanel {
         resizemodel.fireImageChange();
     }
 
-    public void resizeWidthChanged(ChangeEvent evt) {
+    private void resizeWidthChanged(ChangeEvent evt) {
         if (resizemodel.widthChanged(resizewidth.getIntValue())) {
             resizewidth.setIntValue(resizemodel.getWidth());
             resizeheight.setIntValue(resizemodel.getHeight());
@@ -102,7 +119,7 @@ public class ControlPanel extends VerticalGridBagPanel {
         resizemodel.fireImageChange();
     }
 
-    public void resizeHeightChanged(ChangeEvent evt) {
+    private void resizeHeightChanged(ChangeEvent evt) {
         if (resizemodel.heightChanged(resizeheight.getIntValue())) {
             resizewidth.setIntValue(resizemodel.getWidth());
             resizeheight.setIntValue(resizemodel.getHeight());
@@ -110,6 +127,13 @@ public class ControlPanel extends VerticalGridBagPanel {
         resizemodel.fireImageChange();
     }
 
+    /**
+     * Change Listener for crop image - sets the save model image as the
+     * resulting crop image
+     *
+     * @param image the image resulting from the application of the crop
+     * operation
+     */
     public void cropImageChanged(BufferedImage image) {
         savemodel.setImage(image);
         savemodel.fireImageChange();
@@ -125,34 +149,41 @@ public class ControlPanel extends VerticalGridBagPanel {
         cropmodel.fireImageChange();
     }
 
-    public void leftChanged(ChangeEvent evt) {
+    private void leftChanged(ChangeEvent evt) {
         if (cropmodel.leftChanged(left.getIntValue())) {
             left.setIntValue(cropmodel.getLeft());
         }
         cropmodel.fireImageChange();
     }
 
-    public void topChanged(ChangeEvent evt) {
+    private void topChanged(ChangeEvent evt) {
         if (cropmodel.topChanged(top.getIntValue())) {
             top.setIntValue(cropmodel.getTop());
         }
         cropmodel.fireImageChange();
     }
 
-    public void widthChanged(ChangeEvent evt) {
+    private void widthChanged(ChangeEvent evt) {
         if (cropmodel.widthChanged(width.getIntValue())) {
             width.setIntValue(cropmodel.getWidth());
         }
         cropmodel.fireImageChange();
     }
 
-    public void heightChanged(ChangeEvent evt) {
+    private void heightChanged(ChangeEvent evt) {
         if (cropmodel.heightChanged(height.getIntValue())) {
             height.setIntValue(cropmodel.getHeight());
         }
         cropmodel.fireImageChange();
     }
 
+    /**
+     * Change Listener for save image - sets the zoom model image as the
+     * resulting save image
+     *
+     * @param image the image resulting from the application of the save
+     * operation
+     */
     public void saveImageChanged(BufferedImage image) {
         zoommodel.setImage(image);
         zoommodel.fireImageChange();

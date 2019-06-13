@@ -19,11 +19,19 @@ import java.util.ArrayList;
 
 /**
  *
+ * The basic ChangeObserver class
+ *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
+ * @param <T> the class of the parameter to be passed on change detection
  */
 public class ChangeObserver<T> extends ArrayList<ChangeListener<T>> {
-    
+
+    /**
+     * Fire all listeners which have been added to this observer
+     *
+     * @param t the parameter to be passed to each listener
+     */
     void fire(T t) {
-        this.forEach(l->l.changedDetected(t));
+        this.forEach(l -> l.changedDetected(t));
     }
 }

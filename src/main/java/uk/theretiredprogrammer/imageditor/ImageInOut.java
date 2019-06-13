@@ -23,21 +23,42 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
- *
+ * Helper class for image input and output.
+ * 
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public class ImageInOut {
     
     private FileObject from;
 
+    /**
+     * Constructor.
+     * 
+     * @param fo the fileobject of the input image file
+     * @throws IOException if problems
+     */
     public ImageInOut(FileObject fo) throws IOException {
         this.from = fo;
     }
     
+    /**
+     * Get the image.
+     * 
+     * @return the input image
+     * @throws IOException if problems
+     */
     public BufferedImage getImage() throws IOException {
         return ImageIO.read(FileUtil.toFile(from));
     }
     
+    /**
+     * Save an image.
+     * 
+     * The image will be saved in the same folder where the input image is located.
+     * 
+     * @param image the image to be output
+     * @throws IOException if problems
+     */
     public final void save(BufferedImage image) throws IOException {
         String f = from.getName() + "-" + image.getWidth() + "x" + image.getHeight() + "." + from.getExt();
         try (OutputStream out = from.getParent().createAndOpen(f)) {
@@ -46,6 +67,15 @@ public class ImageInOut {
         }
     }
     
+    /**
+     * Save an image in an alternative folder.
+     * 
+     * The image will be saved in the named folder which is located alongside the input image folder.
+     * 
+     * @param image the image to be output
+     * @param foldername the output folder name (must already exist)
+     * @throws IOException if problems
+     */
     public final void save(BufferedImage image, String foldername) throws IOException {
         FileObject tofolder = from.getParent().getParent().getFileObject(foldername);
         String f = from.getName() + "-" + image.getWidth() + "x" + image.getHeight() + "." + from.getExt();

@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 /**
+ * The panel used to display the image.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -26,12 +27,20 @@ public class ImagePanel extends JPanel {
 
     private final ImageDisplay imagefield;
 
+    /**
+     * Constructor.
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ImagePanel() {
         imagefield = new ImageDisplay();
         add(imagefield);
     }
-    
+
+    /**
+     * Insert image into the panel
+     *
+     * @param image the image to display
+     */
     public void display(BufferedImage image) {
         imagefield.display(image);
     }

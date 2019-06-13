@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 /**
+ * A UI component which displays an image
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -31,6 +32,11 @@ public class ImageDisplay extends JComponent {
 
     private BufferedImage image;
 
+    /**
+     * Display an image.
+     *
+     * @param image the image to display
+     */
     public void display(BufferedImage image) {
         setBackground(Color.WHITE);
         setFocusable(true);
@@ -44,6 +50,6 @@ public class ImageDisplay extends JComponent {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawRenderedImage(image, AffineTransform.getTranslateInstance(0,0));
+        g2d.drawRenderedImage(image, AffineTransform.getTranslateInstance(0, 0));
     }
 }

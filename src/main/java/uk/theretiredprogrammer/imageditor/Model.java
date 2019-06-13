@@ -18,61 +18,112 @@ package uk.theretiredprogrammer.imageditor;
 import java.awt.image.BufferedImage;
 
 /**
+ * The abstract Class which provides the basis for the models used in the image
+ * editor.
+ *
+ * Each module represents a single transform or major action.
+ *
+ * Models are chained using the observer/listener pattern so that changes to an
+ * image in one model are passed along the chain.
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public abstract class Model {
-    
+
     ChangeObserver<BufferedImage> observer = new ChangeObserver<>();
-    
+
     BufferedImage image;
-    
+
     boolean fireRequired = false;
-    
+
+    /**
+     * Constructor - create a model with a defined input image
+     * 
+     * @param image the input image
+     */
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public Model(BufferedImage image){
+    public Model(BufferedImage image) {
         this.image = image;
         resetcontrols();
     }
-    
-    public boolean setImage(BufferedImage image){
+
+    /**
+     * Set a new input image for this model.
+     * 
+     * The controls for the model are reset, so the model restarts itself when presented with a new image.
+     * 
+     * @param image the new input image
+     * @return true if controls were reset;
+     */
+    public boolean setImage(BufferedImage image) {
         this.image = image;
         boolean res = resetcontrols();
-        fireRequired=true;
+        fireRequired = true;
         return res;
     }
-    
+
+    /**
+     * Reset the model - firing any listeners, if reset changes any associated control value.
+     * 
+     * @return true if any control changed
+     */
     public final boolean reset() {
         return resetcontrols() ? fireChange() : false;
-        
+
     }
-    
+
     private boolean fireChange() {
         fireRequired = true;
         return true;
     }
-    
-    public void fireImageChange(){
+
+    /**
+     * Fire the change if it has been requested.
+     */
+    public void fireImageChange() {
         if (fireRequired) {
             observer.fire(transform());
             fireRequired = false;
         }
-        
     }
-    
-    public void addChangeListener(ChangeListener<BufferedImage> listener){
+
+    /**
+     * add a listener for changes to this model
+     * 
+     * @param listener the listener
+     */
+    public void addChangeListener(ChangeListener<BufferedImage> listener) {
         observer.add(listener);
     }
-    
-    public void removeChangeListener(ChangeListener<BufferedImage> listener){
+
+    /**
+     * remove a listener for changes to this model
+     * 
+     * @param listener the listener
+     */
+    public void removeChangeListener(ChangeListener<BufferedImage> listener) {
         observer.remove(listener);
     }
-    
+
+    /**
+     * clear all change listeners for this model
+     */
     public void clearChangeListeners() {
         observer.clear();
     }
-    
+
+    /**
+     * Reset all controls for this model.
+     * 
+     * @return true if controls have changed.
+     */
     protected abstract boolean resetcontrols();
-       
+
+    /**
+     * Create an image which is based on the input image, transformed as defined by the
+     * various model parameters to create the resulting image
+     * 
+     * @return the transformed) image.
+     */
     public abstract BufferedImage transform();
 }

@@ -18,6 +18,7 @@ package uk.theretiredprogrammer.imageditor;
 import java.awt.image.BufferedImage;
 
 /**
+ * The model for image resizing
  *
  * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
@@ -26,6 +27,11 @@ public class ModelResize extends Model {
     private int width;
     private int height;
 
+    /**
+     * Constructor
+     *
+     * @param image the input image
+     */
     public ModelResize(BufferedImage image) {
         super(image);
     }
@@ -52,19 +58,29 @@ public class ModelResize extends Model {
     }
 
     /**
-     * @return the width
+     * Get the new image width
+     *
+     * @return the width value
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * @return the height
+     * Get the new image height
+     *
+     * @return the height value
      */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Set a new value for the width
+     *
+     * @param newwidth the new width value
+     * @return true if width changes
+     */
     public boolean widthChanged(int newwidth) {
         return width == newwidth ? false : updatewidth(newwidth);
     }
@@ -76,6 +92,12 @@ public class ModelResize extends Model {
         return true;
     }
 
+    /**
+     * Set a new value for the height
+     *
+     * @param newheight the new height value
+     * @return true if height changes
+     */
     public boolean heightChanged(int newheight) {
         return height == newheight ? false : updateheight(newheight);
     }
