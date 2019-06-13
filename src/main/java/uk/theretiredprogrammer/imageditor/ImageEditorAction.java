@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 richard.
+ * Copyright 2019 richard linsdale.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 
+/**
+ *
+ * @author Richard Linsdale (richard at theretiredprogrammer.uk)
+ */
 @ActionID(
         category = "Images",
         id = "uk.theretiredprogrammer.imageditor"

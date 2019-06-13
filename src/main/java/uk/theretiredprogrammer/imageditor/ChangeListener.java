@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 richard.
+ * Copyright 2019 richard linsdale.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.theretiredprogrammer.imageditor;
 
 /**
  *
- * @author richard
+ * @author Richard Linsdale (richard at theretiredprogrammer.uk)
  */
 public interface ChangeListener<T> {
     
