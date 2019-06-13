@@ -29,7 +29,7 @@ import org.openide.awt.ActionRegistration;
 )
 @ActionRegistration(
         iconBase = "uk/theretiredprogrammer/imageditor/paintbrush.png",
-        displayName = "Open with Image Editor"
+        displayName = "Open with Img Editor"
 )
 @ActionReference(path = "Loaders/image/png-gif-jpeg-bmp/Actions", position = 100)
 public final class ImageEditorAction implements ActionListener {
