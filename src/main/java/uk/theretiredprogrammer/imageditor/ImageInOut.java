@@ -29,7 +29,7 @@ import org.openide.filesystems.FileUtil;
  */
 public class ImageInOut {
     
-    private FileObject from;
+    private final FileObject from;
 
     /**
      * Constructor.

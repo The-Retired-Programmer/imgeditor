@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 richard linsdale.
+ * Copyright 2019 richard.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- <p>IMG Editor (A NetBeans plugin)</p>
- <p>The plugin provides a basic image editor for all image types recognised by NetBeans.</p>
- <p>Image manipulations include:<br>
- &nbsp;&nbsp;&nbsp;&nbsp;Resizing<br>
- &nbsp;&nbsp;&nbsp;&nbsp;Cropping<br>
- &nbsp;&nbsp;&nbsp;&nbsp;Multiple reduced sized image creation<br>
- </p>
- <p> ... more later ...</p>
- */
 package uk.theretiredprogrammer.imageditor;
 
+import org.openide.filesystems.FileObject;
+
+/**
+ *
+ * @author richard
+ */
+public class ImgedtWorker implements Runnable {
+
+    private final FileObject imgedtfile;
+    
+    public ImgedtWorker(FileObject imgedtfile) {
+        this.imgedtfile = imgedtfile;
+    }
+
+    @Override
+    public void run() {
+    }
+
+    
+}
