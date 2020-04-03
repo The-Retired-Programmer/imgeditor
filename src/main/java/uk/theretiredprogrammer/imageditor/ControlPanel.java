@@ -44,10 +44,9 @@ public class ControlPanel extends VerticalGridBagPanel {
     private final ModelSave savemodel;
     private final JCheckBox inplace;
     private final ControlTextField savefoldername;
-    private final ControlIntSpinnerField percentage;
-    private final ControlIntSpinnerField minwidth;
     //
     private final ModelZoom zoommodel;
+
     /**
      * Create the control panel.
      *
@@ -81,9 +80,6 @@ public class ControlPanel extends VerticalGridBagPanel {
         inplace = labeledCheckbox("Save in place:", savemodel.isInplace(), this::inplaceChanged);
         savefoldername = labeledTextField("Save Directory (../<folder>):", savemodel.getSavefoldername(), this::savefoldernamechanged);
         centredButton("Save", this::save);
-        percentage = labeledIntSpinnerField("%:", savemodel.getPercentage(), 1, 99, this::percentageChanged);
-        minwidth = labeledIntSpinnerField("Min width:", savemodel.getMinwidth(), 1, Integer.MAX_VALUE, this::minwidthChanged);
-        centredButton("Save Multiple", this::savemultiple);
     }
 
     /**
@@ -189,14 +185,6 @@ public class ControlPanel extends VerticalGridBagPanel {
         zoommodel.fireImageChange();
     }
 
-    private void percentageChanged(ChangeEvent evt) {
-        savemodel.setPercentage(percentage.getIntValue());
-    }
-
-    private void minwidthChanged(ChangeEvent evt) {
-        savemodel.setMinwidth(minwidth.getIntValue());
-    }
-
     private void inplaceChanged(ItemEvent ivt) {
         savemodel.setInplace(inplace.isSelected());
     }
@@ -207,9 +195,5 @@ public class ControlPanel extends VerticalGridBagPanel {
 
     private void save(ActionEvent evt) {
         savemodel.save();
-    }
-
-    private void savemultiple(ActionEvent evt) {
-        savemodel.savemultiple();
     }
 }

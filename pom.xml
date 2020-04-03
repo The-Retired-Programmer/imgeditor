@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.theretiredprogrammer</groupId>
     <artifactId>imgeditor</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>nbm</packaging>
     
     <name>Image Editor NB Plugin</name>
@@ -39,7 +39,7 @@
     </licenses>
        
     <properties>
-        <netbeans.version>RELEASE82</netbeans.version>
+        <netbeans.version>RELEASE111</netbeans.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -118,27 +118,13 @@
         </dependency>
     </dependencies>
     
-    <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>4.3</version>
                     <extensions>true</extensions>
                     <configuration>
                         <cluster>imgeditor</cluster>
@@ -151,7 +137,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.2</version>
                     <configuration>
                         <archive>
                             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -162,75 +148,9 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <configuration>
-                    <publicPackages>
-                        <publicPackage>uk.theretiredprogrammer.imageditor</publicPackage>
-                    </publicPackages>
-                </configuration>
             </plugin>
         </plugins>
     </build>
-    
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>create-autoupdate</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>autoupdate</goal>
-                                </goals>
-                                <configuration>
-                                    <distBase>http://repo.maven.apache.org/maven2/uk/theretiredprogrammer/imgeditor/${project.version}</distBase>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
